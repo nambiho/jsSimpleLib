@@ -29,7 +29,7 @@ this,
 				isOpera:opera,isFirefox:firefox,isWhale:whale,ieMore:ie,ios:/iphone|ipad/.test(b)
 			}
 		} ()),
-
+	    
 		toString = Object.prototype.toString,
 
 		jsonctor = JSON.constructor,
