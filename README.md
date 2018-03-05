@@ -1,6 +1,6 @@
 # collect
 Simple javascript library
-- incomplete yet
+- It is still incomplete. It will be updated continuously.
 
 
 
