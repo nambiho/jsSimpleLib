@@ -9,7 +9,7 @@ this,
 	"use strict";
 
 	var
-		version = "0.1",
+		version = "0.0.1",
 
 		bInfo = (function () {
 			var b = navigator.userAgent.toLowerCase(),
