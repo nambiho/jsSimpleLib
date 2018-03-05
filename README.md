@@ -1,6 +1,6 @@
 # Simple javascript library
 started : 2017.12.28   
-now : It is still incomplete. It will be updated continuously.
+- It is still incomplete. It will be updated continuously.
 
 
 
