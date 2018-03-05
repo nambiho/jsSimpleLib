@@ -5,7 +5,7 @@ Simple javascript library
 
 
 # object
-
+~~~~
 function simplelib (options) {
   if (this === undefined) return null;
   this.init(options);
@@ -56,3 +56,4 @@ var utils = {
   noop : noop,
   strPattern : strPattern
 };
+~~~~
