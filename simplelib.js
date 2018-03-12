@@ -91,24 +91,24 @@ this,
 		trim = function (x) {
 			return x.replace(/^[\s]+|[\s]+$/g,"")
 		},
-
-		getElementById = function (s){
+		
+		getbyId = function (s){
 			return ((this && this.getElementById) ? this : document).getElementById(s)
 		},
 
-		getElementByClassName = function (s){
+		getbyClassName = function (s){
 			return Array.prototype.slice.call(
 				((this && this.getElementsByClassName) ? this : document).getElementsByClassName(s)
 			)
 		},
 
-		getElementByTagName = function (s){
+		getbyTagName = function (s){
 			return Array.prototype.slice.call(
 				((this && this.getElementsByTagName) ? this : document).getElementsByTagName(s)
 			)
 		},
 		
-		getElementName = function (s){
+		getbyName = function (s){
 			return Array.prototype.slice.call(
 				((this && this.getElementsByName) ? this : document).getElementsByName(s)
 			)
@@ -305,10 +305,10 @@ this,
 		isJSON : isJSON,
 		isJsonString : isJsonString,
 		trim : trim,
-		getElementById : getElementById,
-		getElementByClassName : getElementByClassName,
-		getElementByTagName : getElementByTagName,
-		getElementName : getElementName,
+		getbyId : getbyId,
+		getbyClassName : getbyClassName,
+		getbyTagName : getbyTagName,
+		getbyName : getbyName,
 		query : query,
 		queryall : queryall,
 		copy : copy,
