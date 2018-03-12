@@ -291,7 +291,7 @@ this,
 
 
 	var task = new Runtask();
-	var utils = {
+	var util = {
 		isObject : isObject,
 		isNative : isNative,
 		isArray : isArray,
@@ -336,7 +336,7 @@ this,
 		bInfo : bInfo,
 		task : task,
 		loader : loader,
-		utils : utils,
+		util : util,
 		init : function (options) {
 			this.options = options;
 		}
