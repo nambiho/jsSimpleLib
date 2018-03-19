@@ -139,7 +139,7 @@ this,
 			return target
 		},
 
-		style = function (el,style) {
+		css = function (el,style) {
 			if (!isObject(style)) return el;
 			for(var x in style){
 				el.style[x] = style[x]
@@ -163,21 +163,13 @@ this,
 			for(var attr in info.attr) {
 				el.setAttribute(attr,info.attr[attr])
 			}
-			for(var style in info.style) {
-				el.style[style]=info.style[style]
-			}
+			css(el, info.style);
 			for(var ev in info.event){
-				isFunction(info.event[ev]) && addEvent(el, ev, info.event[ev]) //el.addEventListener(ev, info.event[ev], false)
-				// el.addEventListener(ev, function (e) {
-				// 	info.event[ev].call(obj || this, e)
-				// }, false)
+				isFunction(info.event[ev]) && addEvent(el, ev, info.event[ev])
 			}
 			info.child ? el.appendChild(info.child) : 
 				info.html ? el.innerHTML = info.html : 
 					info.text && ((el.textContent = info.text))
-			//info.text && (el.textContent = info.text);
-			//info.html && (el.innerHTML = info.html);
-			//(info.parent || document.body)["appendChild"](el);
 			info.parent && info.parent.appendChild(el);
 			return el
 		},
@@ -325,7 +317,7 @@ this,
 		query : query,
 		queryall : queryall,
 		copy : copy,
-		style : style,
+		css : css,
 		merge : merge,
 		createElement : createElement,
 		addEvent : addEvent,
