@@ -2,7 +2,7 @@
   "name": "jssimplelib",
   "version": "1.0.0",
   "description": "started : 2017.12.28    - It is still incomplete. It will be updated continuously.",
-  "main": "simplelib.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
