@@ -6,3 +6,9 @@ temp/
 
 # node_modules
 node_modules/
+
+# test file
+*_test.*
+
+# webpack make directory
+public/
