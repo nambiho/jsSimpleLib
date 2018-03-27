@@ -1,7 +1,11 @@
+const webpack = require('webpack');
+
+var dir='./src';
+
 module.exports = {
 	mode:'development',
 	entry:{
-		simplelib: './src/simplelib.js'
+		simplelib: [dir+'/simplelib.js', dir+'/index.js']
 	},
 	output : {
 		path : __dirname + '/public',
