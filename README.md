@@ -5,6 +5,7 @@ started : 2017.12.28
 
 
 # object
+~~~~
   version : version,
   constructor : simplelib,
   options : null,
@@ -39,3 +40,4 @@ started : 2017.12.28
 	  merge: merge,
 	  delPrefixMerge: delPrefixMerge
   }
+~~~~
