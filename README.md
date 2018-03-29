@@ -12,6 +12,7 @@ started : 2017.12.28
   bInfo : bInfo,
   task : task,
   loader : loader,
+  
   utils : {
     isObject: isObject,
 		isNative: isNative,
