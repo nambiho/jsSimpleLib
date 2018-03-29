@@ -1,13 +1,14 @@
+import Version from '../lib/version';
 import {bInfo} from '../lib/navigator';
+import {default as util} from '../lib/utillity.js';
 
-
-class Simplelib {
+export default class simplelib {
 	constructor (opt) {
 		//console.log(bInfo)
-		this.bInfo = bInfo
+		this.bInfo = bInfo();
+		this.version = Version;
+		this.option = opt
 	}
 }
 
-export default function simplelib (opt) {
-	return new Simplelib(opt)
-}
+simplelib.prototype.util = util();
