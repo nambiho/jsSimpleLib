@@ -1,6 +1,7 @@
-import Version from '../lib/version';
-import {bInfo} from '../lib/navigator';
-import {default as util} from '../lib/utillity.js';
+
+import Version from './version';
+import {bInfo} from './navigator';
+import {default as util} from './utillity.js';
 
 export default class simplelib {
 	constructor (opt) {
