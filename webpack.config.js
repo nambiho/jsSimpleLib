@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 
-var dir='./src';
+//var dir='./src';
+var dir='./build';
 
 module.exports = {
 	mode:'development',
