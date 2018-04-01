@@ -116,14 +116,15 @@ export default function utillity () {
 	},
 
 	queryall = function (s) {
-		let m = ((this && this.querySelectorAll) ? this : document).querySelectorAll(s);
-		return m.forEach ? m : Array.prototype.slice.call(m)
+		// let m = ((this && this.querySelectorAll) ? this : document).querySelectorAll(s);
+		// return m.forEach ? m : Array.prototype.slice.call(m)
+		return Array.from(((this && this.querySelectorAll) ? this : document).querySelectorAll(s));
 	},
 
-	style = (el,stle) => {
-		if (!isObject(stle)) return el;
-		for(let x in stle) {
-			el.style[x] = stle[x]
+	style = (el,stl) => {
+		if (!isObject(stl)) return el;
+		for(let x in stl) {
+			el.style[x] = stl[x]
 		}
 	},
 
