@@ -12,38 +12,49 @@ export default function utillity () {
 	isArray = (x) => {
 		return (toString.call(x) === "[object Array]")
 	},
+
 	isObject = (x) => {
 		if (!x) return false;
 		if (!x.constructor) return false;
 		return (!x.constructor.name) ? toString.call(x) === '[object Object]' : x.constructor.name === 'Object'
 	},
+
 	isNative = (x) => {
 		return x.indexOf("[native code]") > -1
 	},
+
 	isFunction = (x) => {
 		return typeof x === "function"
 	},
+
 	isString = (x) => {
 		return typeof x === "string"
 	},
+
 	isNull = (x) => {
 		return (toString.call(x) === "[object Null]")
 	},
+
 	isUndefined = (x) => {
 		return (typeof x === "undefined")
 	},
+
 	isFalse = (x) => {
 		return (isNull(x) || isUndefined(x) || (x === "") || (x === 0) || !x)
 	},
+
 	isJSON = (x) => {
 		return x.constructor === jsonctor
 	},
+
 	isJsonString = (x) => {
 		try {return JSON.parse(x) && !!x} catch(e) {return false}
 	},
+
 	isDom = (x) => {
 		return x && !!x.nodeName
 	},
+
 	isPlain = (x) => {
 		if (isFalse(x) || !isObject(x)) return false;
 		let p=Object.getPrototypeOf(x);
@@ -58,6 +69,7 @@ export default function utillity () {
 	trim = (x) => {
 		return x.replace(/^[\s]+|[\s]+$/g,"")
 	},
+
 	strPattern = function (d,c) {
 		// d = json to be replace
 		// {'test' : 'replace test'}
@@ -78,9 +90,10 @@ export default function utillity () {
 	},
 
 	getbyClassName = function (s) {
-		return Array.prototype.slice.call(
-			((this && this.getElementsByClassName) ? this : document).getElementsByClassName(s)
-		)
+		// return Array.prototype.slice.call(
+		// 	((this && this.getElementsByClassName) ? this : document).getElementsByClassName(s)
+		// )
+		return Array.from(((this && this.getElementsByClassName) ? this : document).getElementsByClassName(s))
 	},
 
 	getbyTagName = function (s) {
@@ -91,9 +104,10 @@ export default function utillity () {
 	},
 	
 	getbyName = function (s) {
-		return Array.prototype.slice.call(
-			((this && this.getElementsByName) ? this : document).getElementsByName(s)
-		)
+		// return Array.prototype.slice.call(
+		// 	((this && this.getElementsByName) ? this : document).getElementsByName(s)
+		// )
+		return Array.from(((this && this.getElementsByName) ? this : document).getElementsByName(s))
 	},
 
 	query = function (s) {
@@ -105,12 +119,14 @@ export default function utillity () {
 		let m = ((this && this.querySelectorAll) ? this : document).querySelectorAll(s);
 		return m.forEach ? m : Array.prototype.slice.call(m)
 	},
+
 	style = (el,stle) => {
 		if (!isObject(stle)) return el;
 		for(let x in stle) {
 			el.style[x] = stle[x]
 		}
 	},
+
 	createElement = (info,obj) => {
 		if (!info.dom) return null;
 		var el = document.createElement(info.dom);
@@ -127,19 +143,22 @@ export default function utillity () {
 		info.parent && info.parent.appendChild(el);
 		return el
 	},
+
 	addEvent = (t,tp,ev,c) => {
 		t && tp && isFunction(ev) && (t.addEventListener
 			? t.addEventListener(tp, ev || noop, c || false)
-			:t.attachEvent('on' + tp, ev || noop)
+			: t.attachEvent('on' + tp, ev || noop)
 		)
 	},
+
 	removeEvent = (t,tp,ev) => {
 		t && tp && isFunction(ev) && (t.removeEventListener
 			? t.removeEventListener(tp, ev || noop)
 			: t.dettachEvent('on' + tp, ev || noop)
 		)
 	},
-	trigger = async function _trigger (_obj,_eventtype) {
+
+	trigger = function _trigger (_obj,_eventtype) {
 		const _browserEvent = () => {
 			let ev;
 			if(typeof(Event) === 'function') {
@@ -176,6 +195,7 @@ export default function utillity () {
 		}
 		return result
 	},
+
 	merge = (target, ...source) => {
 		let result = target;
 		source.forEach((el, idx) => {
@@ -183,6 +203,7 @@ export default function utillity () {
 		})
 		return result || {}
 	},
+
 	delPrefixMerge = (target, delPrefix, ...source) => {
 		let result = target;
 		source.forEach((el, idx) => {
