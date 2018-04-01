@@ -1,17 +1,20 @@
 const webpack = require('webpack');
 
-//var dir='./src';
-var dir='./build';
+var dir='./src';
+//var dir='./build';
 
 module.exports = {
 	mode:'development',
 	entry:{
-		simplelib: [dir+'/simplelib.js', dir+'/index.js']
+		simplelib: [dir+'/simplelib.js' , dir+'/index.js']
 	},
 	output : {
 		path : __dirname + '/public',
 		filename : '[name].js',
 		publicPath:'/'
+	},
+	devServer: {
+		contentBase: __dirname + "/public"
 	},
 	module : {
 		rules: [{
