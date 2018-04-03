@@ -9,5 +9,15 @@ window.addEventListener('DOMContentLoaded', function (ev) {
 	//console.log(sl.util.delPrefixMerge({a:'1'}, 'aaa', {'_b':'2'}));
 	//console.log(sl.util.getbyTagName('div'))
 	//sl.util.merge()
-	console.log(sl)
+	sl.runTask([{
+		func : function () {
+			var i = 0;
+			for (; i < 100 ; i++) {}
+			console.log(i);
+		},
+		async : false
+	},{
+		func : function () {console.log('sync = true')},
+		object : sl
+	}]).run();
 });
