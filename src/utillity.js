@@ -1,6 +1,6 @@
 'use strict';
 
-export default function utillity () {
+function utillity () {
 	
 	const 
 	toString = Object.prototype.toString,
@@ -10,7 +10,7 @@ export default function utillity () {
 	// is Functions
 	const
 	isArray = (x) => {
-		return (toString.call(x) === "[object Array]")
+		return Array.isArray(x) //(toString.call(x) === "[object Array]")
 	},
 
 	isObject = (x) => {
@@ -44,7 +44,7 @@ export default function utillity () {
 	},
 
 	isJSON = (x) => {
-		return x.constructor === jsonctor
+		return !!x && (x.constructor === jsonctor)
 	},
 
 	isJsonString = (x) => {
@@ -241,6 +241,9 @@ export default function utillity () {
 		removeEvent: removeEvent,
 		copy: copy,
 		merge: merge,
-		delPrefixMerge: delPrefixMerge
+		delPrefixMerge: delPrefixMerge,
+		noop: noop
 	}
 }
+
+export default utillity();
