@@ -4,8 +4,9 @@ const fs = require('fs');
 
 function createServer (app, port) {
 	let server = http.createServer(app);
-	server.listen(port);
-	console.log('server started')
+	server.listen(port, function () {
+		console.log('server started port ' + port)
+	});
 }
 
 
