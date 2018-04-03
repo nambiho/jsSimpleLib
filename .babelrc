@@ -3,5 +3,8 @@
 		"transform-es2015-modules-commonjs",{
 			"allowTopLevelThis": true
 		}
-	]]
+	]],
+	"ignore": [
+		"polyfill.js"
+	]
 }
