@@ -6,15 +6,13 @@ var dir='./src';
 module.exports = {
 	mode:'development',
 	entry:{
-		simplelib: [dir+'/simplelib.js' , dir+'/index.js']
+		simplelib: [dir+'/simplelib.js' , dir+'/index.js'],
+		polyfill: [dir+'/polyfill.js']
 	},
 	output : {
 		path : __dirname + '/public',
 		filename : '[name].js',
-		publicPath:'/'
-	},
-	devServer: {
-		contentBase: __dirname + "/public"
+		publicPath:'/public/'
 	},
 	module : {
 		rules: [{
