@@ -16,5 +16,6 @@ export default class simplelib {
 	}
 }
 
-simplelib.prototype.util = util();
+simplelib.prototype.util = util;
+simplelib.prototype.runTask = Runtask;
 
