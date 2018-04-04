@@ -23,6 +23,7 @@ function define(O, key, value) {
 }
 
 define(String.prototype, "padLeft", "".padStart);
+
 define(String.prototype, "padRight", "".padEnd);
 
 "pop,reverse,shift,keys,values,entries,indexOf,every,some,forEach,map,filter,find,findIndex,includes,join,slice,concat,push,splice,unshift,sort,lastIndexOf,reduce,reduceRight,copyWithin,fill".split(",").forEach(function (key) {
