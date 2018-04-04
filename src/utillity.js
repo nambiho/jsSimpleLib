@@ -211,6 +211,10 @@ function utillity () {
 			!isFalse(source) && (result = copy(result,el,delPrefix))
 		})
 		return result || {}
+	},
+
+	object = (o,descriptor,extend) => {
+		return Object.create(merge({},0x5f,o,extend),descriptor)
 	}
 	;
 	
@@ -242,6 +246,7 @@ function utillity () {
 		copy: copy,
 		merge: merge,
 		delPrefixMerge: delPrefixMerge,
+		object: object,
 		noop: noop
 	}
 }
