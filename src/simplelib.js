@@ -11,11 +11,12 @@ export default class simplelib {
 		this.bInfo = bInfo();
 		this.version = Version;
 		this.option = opt;
-		this.runtask = Runtask;
-		this.loader = loader
+		this.util = util;
+		//this.runtask = Runtask;
+		//this.loader = loader
 	}
 }
 
-simplelib.prototype.util = util;
+simplelib.prototype.loader = loader;
 simplelib.prototype.runTask = Runtask;
 
