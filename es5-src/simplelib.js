@@ -46,7 +46,7 @@ this,
 		},
 
 		isArray = function(x) {
-			return (toString.call(x) === "[object Array]")
+			return Array.isArray ? Array.isArray(x) : (toString.call(x) === "[object Array]")
 		},
 
 		isFunction = function(x) {
@@ -82,7 +82,7 @@ this,
 		},
 
 		isJSON = function (x) {
-			return x.constructor === jsonctor
+			return !!x && (x.constructor === jsonctor)
 		},
 
 		isJsonString = function (x) {
