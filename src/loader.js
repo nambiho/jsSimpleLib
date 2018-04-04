@@ -1,7 +1,5 @@
 'use strict';
 
-import {default as util} from './utillity.js';
-
 export const loader = function _script_loader(){
 	function location_src(src){return src}
 	function load_script(src){
