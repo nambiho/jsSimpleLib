@@ -16,3 +16,4 @@ public/
 # build directory
 build/
 dist/
+lib/
