@@ -11,6 +11,11 @@ export const loader = function _script_loader(){
 			return _script_elem
 		})())
 	}
+
+
+
+	console.log(this)
+	return;
 	for(var i = 0; i < arguments.length; i++){
 		load_script(arguments[i])
 	}

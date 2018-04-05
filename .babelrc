@@ -1,10 +1,7 @@
 {
-	"plugins":[[
-		"transform-es2015-modules-commonjs",{
-			"allowTopLevelThis": true
-		}
-	]],
+	"presets": ["es2015"],
 	"ignore": [
-		"polyfill.js"
+		"polyfill.js",
+		"index.js"
 	]
 }

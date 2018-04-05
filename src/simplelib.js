@@ -1,22 +1,19 @@
+'use strict';
 
 import {Version} from './version';
-import {bInfo} from './navigator';
-import util from './utillity.js';
-import {Runtask} from './task.js';
-import {loader} from './loader.js';
+import {bInfo} from './browserinfo';
+import util from './utillity';
+import {runtask} from './runtask';
+import {loader} from './loader';
 
-export default class simplelib {
+(this||window)['simplelib'] = class simplelib {
 	constructor (opt) {
-		//console.log(bInfo)
 		this.bInfo = bInfo();
 		this.version = Version;
 		this.option = opt;
 		this.util = util;
-		//this.runtask = Runtask;
-		//this.loader = loader
 	}
 }
-
 simplelib.prototype.loader = loader;
-simplelib.prototype.runTask = Runtask;
+simplelib.prototype.runtask = runtask;
 

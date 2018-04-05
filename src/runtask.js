@@ -1,6 +1,6 @@
 'use strict';
 
-export const Runtask = function(taskInfo) {
+export const runtask = function(taskInfo) {
 	/*
 	taskInfo = {
 		async:true/false
@@ -49,14 +49,13 @@ export const Runtask = function(taskInfo) {
 					? setTimeout(function(){func.apply(object, argv)}, 0)
 					: func.apply(object, argv)
 				}
+				oldQUEUE.push(proc);
 			}
 			return this
 		}
 	});
 	Object.defineProperty(object, 'queue', {
 		set : function (tasks) {
-			// set 함수에서 직접 변수를 변경 해야 한다.
-			// 다른 함수를 호출 하여 다른 함수에서 변수를 변경 하게 되면 재사용이 안됨
 			QUEUE = getTasks(tasks)
 		},
 		get : function () {
