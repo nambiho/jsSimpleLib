@@ -1,12 +1,12 @@
 'use strict';
 
 import {Version} from './version';
-import {bInfo} from './browserinfo';
+import {bInfo} from './binfo';
 import util from './utillity';
 import {runtask} from './runtask';
 import {loader} from './loader';
 
-(this||window)['simplelib'] = class simplelib {
+class simplelib {
 	constructor (opt) {
 		this.bInfo = bInfo();
 		this.version = Version;
@@ -17,3 +17,4 @@ import {loader} from './loader';
 simplelib.prototype.loader = loader;
 simplelib.prototype.runtask = runtask;
 
+(this||window)['simplelib'] = simplelib;
