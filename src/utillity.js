@@ -129,6 +129,16 @@ function utillity () {
 	},
 
 	createElement = (info,obj) => {
+		/* info = {
+			dom:'div'
+			attr:{},
+			style:{},
+			event:{},
+			child:
+			html:'<span>createElement</span>'
+			text:'createElement',
+			parent:
+		}*/
 		if (!info.dom) return null;
 		var el = document.createElement(info.dom);
 		for(let attr in info.attr) {
