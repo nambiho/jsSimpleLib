@@ -6,13 +6,12 @@ var dir='./src';
 module.exports = {
 	mode:'development',
 	entry:{
-		simplelib: [dir+'/simplelib.js' , dir+'/index.js'],
-		polyfill: [dir+'/polyfill.js']
+		simplelib: [dir+'/simplelib.js']
 	},
 	output : {
-		path : __dirname + '/public',
+		path : __dirname + '/dist',
 		filename : '[name].js',
-		publicPath:'/public/'
+		publicPath:'/dist/'
 	},
 	module : {
 		rules: [{
@@ -21,6 +20,7 @@ module.exports = {
 			options: {
 			  presets: ['es2015']
 			},
+			
 			exclude: ['/node_modules']
 		}]
 	}
