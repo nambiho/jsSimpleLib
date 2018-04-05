@@ -1,20 +1,30 @@
 'use strict';
 
-export const loader = function _script_loader(){
-	function location_src(src){return src}
-	function load_script(src){
-		var _append = document.head;
-		_append.appendChild((function(){
-			var _script_elem = document.createElement("script");
-			_script_elem.onload = _script_elem.onreadystatechange = noop;
-			_script_elem.src = location_src(src);
-			return _script_elem
-		})())
-	}
+export const loader = function (...argv){
+	let train = Array();
 
+	const location_src = (src) => {return src};
+	const onload = (id) => {}
+	const load = (src) => {
+		if (!src) return;
+		const head = document.head;
+		const script = this.util.createElement({
+			dom:"script",
+			attr:{
+				src:src
+			},
+			event:{
+				//load:function () {abc()},
+				error:function () {
+					throw new Error(src + ' : script loading error')
+				}
+			}
+		});
+		head.appendChild(script);
+	};
 
-
-	console.log(this)
+	load('/public/test2.js');
+	
 	return;
 	for(var i = 0; i < arguments.length; i++){
 		load_script(arguments[i])
