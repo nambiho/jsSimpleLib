@@ -1,13 +1,14 @@
 const webpack = require('webpack');
 
-var dir='./src';
-//var dir='./build';
-
+const dir='./src';
+const lifecycle = process.env.npm_lifecycle_event;
+let entry = {simplelib: [dir+'/simplelib.js']};
+if (lifecycle === 'dev') {
+	entry.index='./lib/index.js'
+}
 module.exports = {
 	mode:'development',
-	entry:{
-		simplelib: [dir+'/simplelib.js']
-	},
+	entry:entry,
 	output : {
 		path : __dirname + '/dist',
 		filename : '[name].js',
@@ -20,7 +21,6 @@ module.exports = {
 			options: {
 			  presets: ['es2015']
 			},
-			
 			exclude: ['/node_modules']
 		}]
 	}
