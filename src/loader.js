@@ -1,8 +1,19 @@
 'use strict';
 
 export const loader = function (...argv){
-	let train = Array();
+	/*
+	arg = [], ..., function
+	*/
 
+	let train = Array();
+	argv.forEach((entry, idx) => {
+		if (this.util.isArray(entry)) {
+			train=train.concat(entry)
+		} else train.push(entry)
+	});
+
+	//let idx = 0;
+	const promise = new Promise((resolve, reject) => {});
 	const location_src = (src) => {return src};
 	const onload = (id) => {}
 	const load = (src) => {
@@ -11,10 +22,9 @@ export const loader = function (...argv){
 		const script = this.util.createElement({
 			dom:"script",
 			attr:{
-				src:src
+				src:location_src(src)
 			},
 			event:{
-				//load:function () {abc()},
 				error:function () {
 					throw new Error(src + ' : script loading error')
 				}
@@ -23,10 +33,9 @@ export const loader = function (...argv){
 		head.appendChild(script);
 	};
 
-	load('/public/test2.js');
-	
-	return;
-	for(var i = 0; i < arguments.length; i++){
-		load_script(arguments[i])
-	}
+	train.forEach((entry, idx) => {
+		if (!entry) return false
+		if (this.util.isFunction(entry)) return false
+		load(entry)
+	});
 }
