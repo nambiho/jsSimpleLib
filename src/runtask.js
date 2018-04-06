@@ -3,17 +3,16 @@
 export const runtask = function(taskInfo) {
 	/*
 	taskInfo = {
-		async:true/false
-		func:function
+		async: true/false
+		func: function
 		object: thisArg
-		argv:function argument array
+		argv: arguments
 	}
 	*/
 
-	const THIS=this/*simplelib*/;
-
 	let QUEUE = [], oldQUEUE = [];
 
+	const THIS=this/*simplelib*/;
 	const getTasks = (tasks) => {
 		let tmp = [];
 		if (THIS.util.isArray(tasks)) {
