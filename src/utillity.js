@@ -61,6 +61,56 @@ function utillity () {
 		if (!p) return isJSON(x);
 		let ctor=Object.hasOwnProperty.call(p, "constructor") && p.constructor;
 		return isFunction(ctor) && isNative(ctor.toLocaleString())
+	},
+
+	dateFormat = function _dateFormat(agDate, fmt, bHour12) {
+		let typeof_date = toString.call(agDate),
+		THIS;
+
+		if (typeof_date === "[object String]") {
+			if (toString.call(this) === "[object Date]"){
+				THIS = this;
+				bHour12 = fmt;
+				fmt = agDate;
+			} else {
+				return agDate;
+			}
+		} else if (typeof_date === "[object Date]") {
+			THIS = agDate;
+		} else return "";
+		
+		if (isFalse(THIS)) return "";
+		var y = THIS.getFullYear(),
+		m = THIS.getMonth() + 1,
+		dt = THIS.getDate(),
+		d = THIS.getDay(),
+		h = THIS.getHours(),
+		n = THIS.getMinutes(),
+		s = THIS.getSeconds(),
+		zone = -(THIS.getTimezoneOffset() / 60),
+		hour24 = h,
+		hour12 = (h > 12 ? Math.ceil(h / 12) : h),
+		ampm = (h > 12 ? "PM" : "AM");
+
+		return fmt.replace(/(yyyy|yy|mm|dd|m|d|hh|nn|ss|h|n|s|w|z)/gi, function(_1) {
+			switch (_1) {
+				case "yyyy": return y; break;
+				case "yy": return ("" + y).substr(-2); break;
+				case "mm": return ("0" + m).substr(-2); break;
+				case "dd": return ("0" + d).substr(-2); break;
+				case "m": return m; break;
+				case "d": return dt; break;
+				case "hh": return (bHour12?ampm + " ":"") + ("0" + (bHour12?hour12:hour24)).substr(-2); break;
+				case "nn": return ("0" + n).substr(-2); break;
+				case "ss": return ("0" + s).substr(-2); break;
+				case "h": return h; break;
+				case "n": return n; break;
+				case "ss": return ("0" + s).substr(-2); break;
+				case "s": return s; break;
+				case "w": return lang.date.week[d]; break;
+				case "z": return (zone>0?"+":"-")+zone; break;
+			}
+		});
 	}
 	;
 
@@ -129,7 +179,8 @@ function utillity () {
 	},
 
 	createElement = (info,obj) => {
-		/* info = {
+		/** 
+		 * info = {
 			dom:'div'
 			attr:{},
 			style:{},
@@ -138,7 +189,8 @@ function utillity () {
 			html:'<span>createElement</span>'
 			text:'createElement',
 			parent:
-		}*/
+		  }
+		 */
 		if (!info.dom) return null;
 		var el = document.createElement(info.dom);
 		for(let attr in info.attr) {
@@ -242,6 +294,7 @@ function utillity () {
 		isJsonString: isJsonString,
 		isPlain: isPlain,
 		trim: trim,
+		dateFormat:dateFormat,
 		strPattern: strPattern,
 		getbyId: getbyId,
 		getbyClassName: getbyClassName,
