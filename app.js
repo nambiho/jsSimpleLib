@@ -9,8 +9,6 @@ function createServer (app, port) {
 	});
 }
 
-
-
 createServer((req, res) => {
 	const {headers, method, url} = req;
 	if (url === '/') {
