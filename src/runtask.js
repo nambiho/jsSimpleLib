@@ -10,7 +10,7 @@ export const runtask = function(taskInfo) {
 	}
 	*/
 
-	let QUEUE = [], oldQUEUE = [];
+	let QUEUE = [], doneQUEUE = [];
 
 	const THIS=this/*simplelib*/;
 	const getTasks = (tasks) => {
@@ -48,7 +48,7 @@ export const runtask = function(taskInfo) {
 					? setTimeout(function(){func.apply(object, argv)}, 0)
 					: func.apply(object, argv)
 				}
-				oldQUEUE.push(proc);
+				doneQUEUE.push(proc);
 			}
 			return this
 		}
