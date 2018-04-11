@@ -1,0 +1,3 @@
+function loader2 () {
+	
+}
