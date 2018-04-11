@@ -41,7 +41,7 @@ export const loader = function (...argv){
 
 	train.forEach((entry, idx) => {
 		if (!entry) return false
-		if (this.util.isFunction(entry)) return false
+		if (this.util.isFunction(entry)) return false //TO-DO
 		load(entry)
 	});
 }
