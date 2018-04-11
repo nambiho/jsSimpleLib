@@ -5,7 +5,7 @@ export const loader = function (...argv){
 	 * Worker does not support.
 	 * The only parent element is document.head.
 	 * 
-	 * arg = [], ..., function
+	 * arguments : [modules...|function, function, modules..., function]
 	 */
 
 	
