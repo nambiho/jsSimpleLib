@@ -1,5 +1,7 @@
 const http = require('http');
 const fs = require('fs');
+const url = require('url');
+const {URL} = require('url');
 
 
 function createServer (app, port) {
@@ -10,8 +12,12 @@ function createServer (app, port) {
 }
 
 createServer((req, res) => {
-	const {headers, method, url} = req;
-	if (url === '/') {
+	const {headers, method} = req;
+	
+	
+	const path = url.parse(req.url);
+
+	if (path.pathname === '/') {
 		fs.readFile(__dirname + '/index.html', (err, data) => {
 			if (err) {
 				res.writeHead(404, {'Content-Type':'text/html'});
@@ -25,8 +31,8 @@ createServer((req, res) => {
 		});
 	}
 
-	if (url.indexOf('/public') !== -1) {
-		fs.readFile(__dirname + url, (err, data) => {
+	if (path.pathname.indexOf('/public') !== -1) {
+		fs.readFile(__dirname + path.pathname, (err, data) => {
 			if (err) {
 				res.writeHead(404, {'Content-Type':'text/html'});
 				res.write('<h1>' + err + '</h1>');
@@ -40,8 +46,8 @@ createServer((req, res) => {
 	}
 
 
-	if (url.indexOf('/build') !== -1) {
-		fs.readFile(__dirname + url, (err, data) => {
+	if (path.pathname.indexOf('/build') !== -1) {
+		fs.readFile(__dirname + path.pathname, (err, data) => {
 			if (err) {
 				res.writeHead(404, {'Content-Type':'text/html'});
 				res.write('<h1>' + err + '</h1>');
@@ -54,8 +60,8 @@ createServer((req, res) => {
 		});
 	}
 
-	if (url.indexOf('/dist') !== -1) {
-		fs.readFile(__dirname + url, (err, data) => {
+	if (path.pathname.indexOf('/dist') !== -1) {
+		fs.readFile(__dirname + path.pathname, (err, data) => {
 			if (err) {
 				res.writeHead(404, {'Content-Type':'text/html'});
 				res.write('<h1>' + err + '</h1>');
@@ -68,8 +74,8 @@ createServer((req, res) => {
 		});
 	}
 
-	if (url.indexOf('/lib') !== -1) {
-		fs.readFile(__dirname + url, (err, data) => {
+	if (path.pathname.indexOf('/lib') !== -1) {
+		fs.readFile(__dirname + path.pathname, (err, data) => {
 			if (err) {
 				res.writeHead(404, {'Content-Type':'text/html'});
 				res.write('<h1>' + err + '</h1>');
