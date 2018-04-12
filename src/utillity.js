@@ -111,7 +111,9 @@ function utillity () {
 				case "z": return (zone>0?"+":"-")+zone; break;
 			}
 		});
-	}
+	},
+
+	delay = (ms,func) => {}
 	;
 
 	// regexp Functions
@@ -310,7 +312,8 @@ function utillity () {
 		merge: merge,
 		delPrefixMerge: delPrefixMerge,
 		object: object,
-		noop: noop
+		noop: noop,
+		delay: delay // TO-DO
 	}
 }
 
