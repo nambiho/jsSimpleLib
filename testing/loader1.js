@@ -1,4 +1,4 @@
-function loader1 () {
+module.exports = function loader1 () {
 	var sl = new simplelib();
 	var loader_method = sl.util.getbyId('loader_method');
 	var loader1_text = 'simplelib.loader(\'loader1.js\')';
@@ -12,4 +12,4 @@ function loader1 () {
 		prev = val
 	});
 }
-loader1()
+//loader1()
