@@ -1,4 +1,5 @@
-'use strict';
+
+"use strict";
 
 export function bInfo () {
 	var b = navigator.userAgent.toLowerCase(),
