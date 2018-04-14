@@ -1,4 +1,5 @@
-'use strict';
+
+"use strict";
 
 export const runtask = function(taskInfo) {
 	/*
@@ -25,7 +26,9 @@ export const runtask = function(taskInfo) {
 		});
 		return tmp;
 	};
-
+	const apply = function (func, object, argv) {
+		return function () {func.apply(object, argv)}
+	};
 	const object = THIS.util.object({
 		add : function (tasks) {
 			let tmp = getTasks(tasks);
@@ -33,7 +36,7 @@ export const runtask = function(taskInfo) {
 			return this
 		},
 		run : function (tasks) {
-			tasks && this.add(tasks);
+			tasks && this.add(tasks)
 			let proc, async, func, object, argv;
 
 			while (1) {
@@ -44,9 +47,9 @@ export const runtask = function(taskInfo) {
 				object = proc.object||null,
 				argv = (THIS.util.isArray(proc.argv) ? proc.argv : [proc.argv]);
 				if (THIS.util.isFunction(func)) {
-					(async)
-					? setTimeout(function(){func.apply(object, argv)}, 0)
-					: func.apply(object, argv)
+					(async) ?
+					setTimeout(apply(func, object, argv), 0) :
+					apply(func, object, argv)()
 				}
 				doneQUEUE.push(proc);
 			}
