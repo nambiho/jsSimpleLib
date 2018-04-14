@@ -1,8 +1,6 @@
 const http = require('http');
 const fs = require('fs');
-const url = require('url');
-const {URL} = require('url');
-
+const URL = require('url');
 
 function createServer (app, port) {
 	let server = http.createServer(app);
@@ -13,11 +11,10 @@ function createServer (app, port) {
 
 createServer((req, res) => {
 	const {headers, method} = req;
-	
-	
-	const path = url.parse(req.url);
+	const url = URL.parse(req.url);
+	const paths = ['/build','/public','/dist','/lib'];
 
-	if (path.pathname === '/') {
+	if (url.pathname === '/') {
 		fs.readFile(__dirname + '/index.html', (err, data) => {
 			if (err) {
 				res.writeHead(404, {'Content-Type':'text/html'});
@@ -29,53 +26,8 @@ createServer((req, res) => {
 			res.write(data);
 			res.end()
 		});
-	}
-
-	if (path.pathname.indexOf('/public') !== -1) {
-		fs.readFile(__dirname + path.pathname, (err, data) => {
-			if (err) {
-				res.writeHead(404, {'Content-Type':'text/html'});
-				res.write('<h1>' + err + '</h1>');
-				res.end();
-				return;
-			}
-			res.writeHead(200, {'Content-Type':'text/javascript'});
-			res.write(data);
-			res.end()
-		});
-	}
-
-
-	if (path.pathname.indexOf('/build') !== -1) {
-		fs.readFile(__dirname + path.pathname, (err, data) => {
-			if (err) {
-				res.writeHead(404, {'Content-Type':'text/html'});
-				res.write('<h1>' + err + '</h1>');
-				res.end();
-				return;
-			}
-			res.writeHead(200, {'Content-Type':'text/javascript'});
-			res.write(data);
-			res.end()
-		});
-	}
-
-	if (path.pathname.indexOf('/dist') !== -1) {
-		fs.readFile(__dirname + path.pathname, (err, data) => {
-			if (err) {
-				res.writeHead(404, {'Content-Type':'text/html'});
-				res.write('<h1>' + err + '</h1>');
-				res.end();
-				return;
-			}
-			res.writeHead(200, {'Content-Type':'text/javascript'});
-			res.write(data);
-			res.end()
-		});
-	}
-
-	if (path.pathname.indexOf('/lib') !== -1) {
-		fs.readFile(__dirname + path.pathname, (err, data) => {
+	} else {
+		fs.readFile(__dirname + url.pathname, (err, data) => {
 			if (err) {
 				res.writeHead(404, {'Content-Type':'text/html'});
 				res.write('<h1>' + err + '</h1>');
