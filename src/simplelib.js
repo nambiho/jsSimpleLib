@@ -2,7 +2,7 @@
 
 import {Version} from './version';
 import {bInfo} from './binfo';
-import util from './utillity';
+import util from './util';
 import {runtask} from './runtask';
 import {loader} from './loader';
 
