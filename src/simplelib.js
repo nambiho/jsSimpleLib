@@ -10,7 +10,7 @@ import lang from "./lang";
 class simplelib {
 	constructor (opt) {
 		this.util = util(this);
-		this.option = this.util.merge({langcode:'en'}, opt);
+		this.option = this.util.merge({langcd:'en'}, opt);
 		this.bInfo = bInfo();
 		this.version = Version;
 		this.lang = lang;

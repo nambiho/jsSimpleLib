@@ -1,6 +1,6 @@
 "use strict";
 
-export default function lang (code = this.option.langcode) {	
+export default function lang (code = this.option.langcd) {	
 	/**
 	 * DATE
 	 */
