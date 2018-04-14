@@ -2,7 +2,11 @@
 <html>
 	<head>
 		<script src='/dist/simplelib.js'></script>
-		<script src='/dist/index.js'></script>
+		<script>
+			var sl = new simplelib({langcode:'kr'});
+			//sl.util.dateFormat(new Date(), "w")
+			console.log(sl.util.dateFormat(new Date(), "w"));
+		</script>
 		<style>
 		div {
 			line-height:2em
