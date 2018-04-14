@@ -36,6 +36,7 @@ module.exports = function (grunt) {
 	
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-browserify');
+	grunt.loadNpmTasks('grunt-contrib-jshint');
 
 	grunt.registerTask('default', ['browserify'/*,'requirejs:dist','umd:dist'*/, 'uglify'/*, 'clean'*/])
 }
