@@ -32,11 +32,33 @@ module.exports = function (grunt) {
 				}
 			}
 		},
+		jshint: {
+			files: ['./src/*.js'],
+			options: {
+				force: false,
+				esversion: 6,
+				asi: true,
+				strict: 'global',
+				browser: true,
+				expr: true,
+				globals: {
+					console: true,
+					simplelib: true
+				}
+			}
+		},
+		watch: {
+			js:{
+				files: ['/src/simplelib.js'],
+				tasks: ['babel:dev']
+			}
+		}
 	});
 	
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 
-	grunt.registerTask('default', ['browserify'/*,'requirejs:dist','umd:dist'*/, 'uglify'/*, 'clean'*/])
+	grunt.registerTask('default', ['jshint','browserify','uglify']);
 }
