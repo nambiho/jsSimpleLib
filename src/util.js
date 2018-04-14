@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
-function util () {
-	
+const util = function (sl) {
+
 	const 
 	toString = Object.prototype.toString,
 	jsonctor = JSON.constructor,
-	noop = function () {};	
+	noop = function () {};
 
 	// is Functions
 	const
@@ -63,52 +63,40 @@ function util () {
 		return isFunction(ctor) && isNative(ctor.toLocaleString())
 	},
 
-	dateFormat = function _dateFormat(agDate, fmt, bHour12) {
-		let typeof_date = toString.call(agDate),
-		THIS;
+	dateFormat = function _dateFormat(agDate, fmt, bHour12, option) {
+		if (isFalse(agDate)) return "";
+		let typeof_date = toString.call(agDate);
+		if (typeof_date !== "[object Date]") return "";
 
-		if (typeof_date === "[object String]") {
-			if (toString.call(this) === "[object Date]"){
-				THIS = this;
-				bHour12 = fmt;
-				fmt = agDate;
-			} else {
-				return agDate;
-			}
-		} else if (typeof_date === "[object Date]") {
-			THIS = agDate;
-		} else return "";
-		
-		if (isFalse(THIS)) return "";
-		var y = THIS.getFullYear(),
-		m = THIS.getMonth() + 1,
-		dt = THIS.getDate(),
-		d = THIS.getDay(),
-		h = THIS.getHours(),
-		n = THIS.getMinutes(),
-		s = THIS.getSeconds(),
-		zone = -(THIS.getTimezoneOffset() / 60),
+		var y = agDate.getFullYear(),
+		m = agDate.getMonth() + 1,
+		dt = agDate.getDate(),
+		d = agDate.getDay(),
+		h = agDate.getHours(),
+		n = agDate.getMinutes(),
+		s = agDate.getSeconds(),
+		zone = -(agDate.getTimezoneOffset() / 60),
 		hour24 = h,
 		hour12 = (h > 12 ? Math.ceil(h / 12) : h),
 		ampm = (h > 12 ? "PM" : "AM");
 
 		return fmt.replace(/(yyyy|yy|mm|dd|m|d|hh|nn|ss|h|n|s|w|z)/gi, function(_1) {
 			switch (_1) {
-				case "yyyy": return y; break;
-				case "yy": return ("" + y).substr(-2); break;
-				case "mm": return ("0" + m).substr(-2); break;
-				case "dd": return ("0" + d).substr(-2); break;
-				case "m": return m; break;
-				case "d": return dt; break;
-				case "hh": return (bHour12?ampm + " ":"") + ("0" + (bHour12?hour12:hour24)).substr(-2); break;
-				case "nn": return ("0" + n).substr(-2); break;
-				case "ss": return ("0" + s).substr(-2); break;
-				case "h": return h; break;
-				case "n": return n; break;
-				case "ss": return ("0" + s).substr(-2); break;
-				case "s": return s; break;
-				case "w": return lang.date.week[d]; break;
-				case "z": return (zone>0?"+":"-")+zone; break;
+				case "yyyy": return y;
+				case "yy": return ("" + y).substr(-2);
+				case "mm": return ("0" + m).substr(-2);
+				case "dd": return ("0" + d).substr(-2);
+				case "m": return m;
+				case "d": return dt;
+				case "hh": return (bHour12?ampm + " ":"") + ("0" + (bHour12?hour12:hour24)).substr(-2);
+				case "nn": return ("0" + n).substr(-2);
+				case "ss": return ("0" + s).substr(-2);
+				case "h": return h;
+				case "n": return n;
+				case "ss": return ("0" + s).substr(-2);
+				case "s": return s;
+				case "w": return sl.lang((option&&option.langcode)||'').date.week[d];
+				case "z": return (zone>0?"+":"-")+zone;
 			}
 		});
 	},
@@ -212,16 +200,16 @@ function util () {
 	},
 
 	addEvent = (t,tp,ev,c) => {
-		t && tp && isFunction(ev) && (t.addEventListener
-			? t.addEventListener(tp, ev || noop, c || false)
-			: t.attachEvent('on' + tp, ev || noop)
+		t && tp && isFunction(ev) && (t.addEventListener ?
+			t.addEventListener(tp, ev || noop, c || false) :
+			t.attachEvent('on' + tp, ev || noop)
 		)
 	},
 
 	removeEvent = (t,tp,ev) => {
-		t && tp && isFunction(ev) && (t.removeEventListener
-			? t.removeEventListener(tp, ev || noop)
-			: t.dettachEvent('on' + tp, ev || noop)
+		t && tp && isFunction(ev) && (t.removeEventListener ?
+			t.removeEventListener(tp, ev || noop) :
+			t.dettachEvent('on' + tp, ev || noop)
 		)
 	},
 
@@ -253,11 +241,11 @@ function util () {
 		let result = isObject(target) ? target : rtype;
 		for (let x in source) {
 			if (!delPrefix || x.substr(0,delPrefix.length) !== delPrefix) {
-				result[x] = (isArray(source[x])
-					? copy(result[x] || [], source[x], delPrefix)
-					: isPlain(source[x])
-						? copy(result[x] || {}, source[x], delPrefix)
-						: source[x])
+				result[x] = (isArray(source[x]) ?
+					copy(result[x] || [], source[x], delPrefix) :
+					isPlain(source[x]) ?
+						copy(result[x] || {}, source[x], delPrefix) :
+						source[x])
 			}
 		}
 		return result
@@ -318,6 +306,6 @@ function util () {
 		pause: pause,
 		delay: delay // TO-DO
 	}
-}
+};
 
-export default util();
+export default util;
