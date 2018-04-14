@@ -22,7 +22,7 @@ createServer((req, res) => {
 				res.end();
 				return;
 			}
-			res.writeHead(200, {'Content-Type':'text/html'});
+			res.writeHead(200, {'Content-Type':'text/html; charset=utf-8'});
 			res.write(data);
 			res.end()
 		});
@@ -34,7 +34,7 @@ createServer((req, res) => {
 				res.end();
 				return;
 			}
-			res.writeHead(200, {'Content-Type':'text/javascript'});
+			res.writeHead(200, {'Content-Type':'text/javascript; charset=utf-8'});
 			res.write(data);
 			res.end()
 		});
