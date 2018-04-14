@@ -4,9 +4,7 @@ const dir='./src';
 const lifecycle = process.env.npm_lifecycle_event;
 let entry = {simplelib: [dir+'/simplelib.js']};
 if (lifecycle === 'dev') {
-	entry.index='./testing/index.js';
-	entry.loader1='./testing/loader1.js';
-	entry.loader2='./testing/loader2.js';
+	entry.index='./testing/index.js'
 }
 module.exports = {
 	mode:'development',
