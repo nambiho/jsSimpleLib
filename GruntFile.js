@@ -87,7 +87,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	//grunt.loadNpmTasks('grunt-open');
 
-	grunt.registerTask('default', ['jshint','clean:dist','browserify','uglify']);
+	grunt.registerTask('default', ['jshint','clean:dist','browserify:dist','uglify']);
 	grunt.registerTask('devserver', ['connect:server', 'clean:dist', 'browserify', 'watch']);
 	grunt.registerTask('conn', ['connect:server']);
 }
