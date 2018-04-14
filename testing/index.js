@@ -33,5 +33,8 @@ window.addEventListener('DOMContentLoaded', function () {
 	//*/
 	
 	/* loader exam */
-	sl.loader(['/dist/loader1.js','./dist/loader2.js']);
+	sl.loader(['/dist/loader1.js','./dist/loader2.js'], function () {
+		//webpack not run, must use with import
+		//loader1();
+	});
 })
