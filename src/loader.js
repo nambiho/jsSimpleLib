@@ -1,4 +1,5 @@
-'use strict';
+
+"use strict";
 
 export const loader = function (jsURL, fn, option){
 	/**
@@ -33,7 +34,7 @@ export const loader = function (jsURL, fn, option){
 					entry.complete = true;
 				},
 				error:function (e) {
-					throw new Error(src + ' : script loading error')
+					throw new Error(entry.url + ' : script loading error')
 				}
 			},
 			parent:document.head
