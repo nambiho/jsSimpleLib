@@ -46,19 +46,13 @@ module.exports = function (grunt) {
 					simplelib: true
 				}
 			}
-		},
-		watch: {
-			js:{
-				files: ['/src/simplelib.js'],
-				tasks: ['babel:dev']
-			}
 		}
 	});
 	
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('grunt-contrib-watch');
+	
 
 	grunt.registerTask('default', ['jshint','browserify','uglify']);
 }
