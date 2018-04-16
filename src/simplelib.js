@@ -19,4 +19,4 @@ class simplelib {
 simplelib.prototype.loader = loader;
 simplelib.prototype.runtask = runtask(simplelib);
 
-window.simplelib || (window.simplelib = simplelib)
+window.simplelib || (window.simplelib = simplelib);
