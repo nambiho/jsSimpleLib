@@ -80,7 +80,7 @@ module.exports = function (grunt) {
 		}
 		,open: {
 			dev: {
-				path: 'http:localhost:8000'
+				path: 'http://localhost:8000'
 			}
 		}
 	});
@@ -92,9 +92,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-connect');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-concat');
-	//grunt.loadNpmTasks('grunt-open');
 
 	grunt.registerTask('default', ['jshint','clean:dist','browserify','uglify']);
 	grunt.registerTask('devserver', ['connect:server', 'clean:dist', 'browserify', 'watch']);
-	grunt.registerTask('conn', ['connect:server']);
 }
