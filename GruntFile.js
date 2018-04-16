@@ -1,6 +1,8 @@
+
+
 module.exports = function (grunt) {
 	'use strict';
-
+	
 	grunt.initConfig({
 		pkg : grunt.file.readJSON('package.json'),
 		uglify:{
@@ -39,12 +41,6 @@ module.exports = function (grunt) {
 				}
 			}
 		},
-		concat: {
-			dist: {
-				src : ['src/*.js'],
-				dest: 'dist/<%= pkg.name %>.js'
-			}
-		},
 		jshint: {
 			files: ['./src/*.js'],
 			options: {
@@ -64,23 +60,17 @@ module.exports = function (grunt) {
 			options: {
 				livereload: true
 			},
-			files: ['./src/*.js','GruntFile.js'],
-			tasks: ['jshint','clean:dist','browserify:dist']
+			files: ['./src/*.js'],
+			tasks: ['jshint','clean:dist','browserify']
 		},
 		connect: {
 			server: {
-				base: '.',
-				livereload: 8000,
-				keepAlive: true,
-				open: {
-					target: 'http://localhost:8000',
-					appName: 'open'
+				options: {
+					open: true,
+					protocol: 'http',
+					hostname: 'localhost',
+					livereload: true
 				}
-			}
-		}
-		,open: {
-			dev: {
-				path: 'http://localhost:8000'
 			}
 		}
 	});
@@ -91,8 +81,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-connect');
 	grunt.loadNpmTasks('grunt-contrib-clean');
-	grunt.loadNpmTasks('grunt-contrib-concat');
 
-	grunt.registerTask('default', ['jshint','clean:dist','browserify','uglify']);
-	grunt.registerTask('devserver', ['connect:server', 'clean:dist', 'browserify', 'watch']);
+	grunt.registerTask('default', ['clean:dist','browserify','uglify']);
+	grunt.registerTask('devserver', ['jshint', 'clean:dist', 'browserify', 'connect:server', 'watch']);
 }
