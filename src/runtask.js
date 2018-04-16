@@ -1,7 +1,7 @@
 
 "use strict";
 
-export const runtask = function(taskInfo) {
+export default function runtask (sl) { return function(taskInfo) {
 	/*
 	taskInfo = {
 		async: true/false
@@ -12,13 +12,11 @@ export const runtask = function(taskInfo) {
 	*/
 
 	let QUEUE = [], doneQUEUE = [];
-
-	const THIS=this/*simplelib*/;
 	const getTasks = (tasks) => {
 		let tmp = [];
-		if (THIS.util.isArray(tasks)) {
+		if (sl.util.isArray(tasks)) {
 			tmp = tmp.concat(tasks)
-		} else if (THIS.util.isJSON(tasks)) {
+		} else if (sl.util.isJSON(tasks)) {
 			tmp = tmp.concat([tasks])
 		}
 		tmp = tmp.filter(function (entry) {
@@ -29,7 +27,7 @@ export const runtask = function(taskInfo) {
 	const apply = function (func, object, argv) {
 		return function () {func.apply(object, argv)}
 	};
-	const object = THIS.util.object({
+	const object = sl.util.object({
 		add : function (tasks) {
 			let tmp = getTasks(tasks);
 			QUEUE = QUEUE.concat(tmp);
@@ -45,8 +43,8 @@ export const runtask = function(taskInfo) {
 				async = proc.async,
 				func = proc.func,
 				object = proc.object||null,
-				argv = (THIS.util.isArray(proc.argv) ? proc.argv : [proc.argv]);
-				if (THIS.util.isFunction(func)) {
+				argv = (sl.util.isArray(proc.argv) ? proc.argv : [proc.argv]);
+				if (sl.util.isFunction(func)) {
 					(async) ?
 					setTimeout(apply(func, object, argv), 0) :
 					apply(func, object, argv)()
@@ -68,4 +66,4 @@ export const runtask = function(taskInfo) {
 
 	object.queue = taskInfo;
 	return object
-}
+}}

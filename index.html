@@ -3,9 +3,16 @@
 	<head>
 		<script src='/dist/simplelib.js'></script>
 		<script>
-			var sl = new simplelib({langcode:'kr'});
-			//sl.util.dateFormat(new Date(), "w")
-			console.log(sl.util.dateFormat(new Date(), "w"));
+			window.addEventListener('DOMContentLoaded', function (e) {
+				var sl = new simplelib({langcode:'kr'});
+				//sl.util.dateFormat(new Date(), "w")
+				//console.log(sl.util.dateFormat(new Date(), "w"));
+
+				var key = sl.util.getbyId('key')
+				sl.util.addEvent(document, 'keydown', function(e){
+					key.textContent = e.which
+				})
+			})	
 		</script>
 		<style>
 		div {
@@ -21,5 +28,7 @@
 		<div id="loader_method" style="border:0px solid black">
 			
 		</div>
+
+		<div id="key"></div>
 	</body>
 </html>

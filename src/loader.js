@@ -1,7 +1,7 @@
 
 "use strict";
 
-export const loader = function (jsURL, fn, option){
+export default function loader (jsURL, fn, option){
 	/**
 	 * Worker does not support.
 	 * The only parent element is document.head.

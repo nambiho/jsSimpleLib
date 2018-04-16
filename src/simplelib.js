@@ -3,8 +3,8 @@
 import {Version} from './version';
 import {bInfo} from './binfo';
 import util from './util';
-import {runtask} from './runtask';
-import {loader} from './loader';
+import runtask from './runtask';
+import loader from './loader';
 import lang from "./lang";
 
 class simplelib {
@@ -17,6 +17,6 @@ class simplelib {
 	}
 }
 simplelib.prototype.loader = loader;
-simplelib.prototype.runtask = runtask;
+simplelib.prototype.runtask = runtask(simplelib);
 
-window.simplelib = simplelib;
+window.simplelib || (window.simplelib = simplelib)

@@ -58,7 +58,8 @@ function lang() {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-var loader = exports.loader = function loader(jsURL, fn, option) {
+exports.default = loader;
+function loader(jsURL, fn, option) {
 	var _this = this;
 
 	/**
@@ -120,7 +121,7 @@ var loader = exports.loader = function loader(jsURL, fn, option) {
 	train.forEach(function (entry, idx) {
 		load(entry);
 	});
-};
+}
 
 },{}],4:[function(require,module,exports){
 
@@ -129,75 +130,76 @@ var loader = exports.loader = function loader(jsURL, fn, option) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-var runtask = exports.runtask = function runtask(taskInfo) {
-	/*
- taskInfo = {
- 	async: true/false
- 	func: function
- 	object: thisArg
- 	argv: arguments
- }
- */
+exports.default = runtask;
+function runtask(sl) {
+	return function (taskInfo) {
+		/*
+  taskInfo = {
+  	async: true/false
+  	func: function
+  	object: thisArg
+  	argv: arguments
+  }
+  */
 
-	var QUEUE = [],
-	    doneQUEUE = [];
-
-	var THIS = this /*simplelib*/;
-	var getTasks = function getTasks(tasks) {
-		var tmp = [];
-		if (THIS.util.isArray(tasks)) {
-			tmp = tmp.concat(tasks);
-		} else if (THIS.util.isJSON(tasks)) {
-			tmp = tmp.concat([tasks]);
-		}
-		tmp = tmp.filter(function (entry) {
-			return 'func' in entry;
-		});
-		return tmp;
-	};
-	var apply = function apply(func, object, argv) {
-		return function () {
-			func.apply(object, argv);
-		};
-	};
-	var object = THIS.util.object({
-		add: function add(tasks) {
-			var tmp = getTasks(tasks);
-			QUEUE = QUEUE.concat(tmp);
-			return this;
-		},
-		run: function run(tasks) {
-			tasks && this.add(tasks);
-			var proc = void 0,
-			    async = void 0,
-			    func = void 0,
-			    object = void 0,
-			    argv = void 0;
-
-			while (1) {
-				if (QUEUE.length === 0) break;
-				proc = QUEUE.splice(0, 1)[0], async = proc.async, func = proc.func, object = proc.object || null, argv = THIS.util.isArray(proc.argv) ? proc.argv : [proc.argv];
-				if (THIS.util.isFunction(func)) {
-					async ? setTimeout(apply(func, object, argv), 0) : apply(func, object, argv)();
-				}
-				doneQUEUE.push(proc);
+		var QUEUE = [],
+		    doneQUEUE = [];
+		var getTasks = function getTasks(tasks) {
+			var tmp = [];
+			if (sl.util.isArray(tasks)) {
+				tmp = tmp.concat(tasks);
+			} else if (sl.util.isJSON(tasks)) {
+				tmp = tmp.concat([tasks]);
 			}
-			return this;
-		}
-	});
-	Object.defineProperty(object, 'queue', {
-		set: function set(tasks) {
-			QUEUE = getTasks(tasks);
-		},
-		get: function get() {
-			return QUEUE;
-		}
-	});
-	Object.freeze(object);
+			tmp = tmp.filter(function (entry) {
+				return 'func' in entry;
+			});
+			return tmp;
+		};
+		var apply = function apply(func, object, argv) {
+			return function () {
+				func.apply(object, argv);
+			};
+		};
+		var object = sl.util.object({
+			add: function add(tasks) {
+				var tmp = getTasks(tasks);
+				QUEUE = QUEUE.concat(tmp);
+				return this;
+			},
+			run: function run(tasks) {
+				tasks && this.add(tasks);
+				var proc = void 0,
+				    async = void 0,
+				    func = void 0,
+				    object = void 0,
+				    argv = void 0;
 
-	object.queue = taskInfo;
-	return object;
-};
+				while (1) {
+					if (QUEUE.length === 0) break;
+					proc = QUEUE.splice(0, 1)[0], async = proc.async, func = proc.func, object = proc.object || null, argv = sl.util.isArray(proc.argv) ? proc.argv : [proc.argv];
+					if (sl.util.isFunction(func)) {
+						async ? setTimeout(apply(func, object, argv), 0) : apply(func, object, argv)();
+					}
+					doneQUEUE.push(proc);
+				}
+				return this;
+			}
+		});
+		Object.defineProperty(object, 'queue', {
+			set: function set(tasks) {
+				QUEUE = getTasks(tasks);
+			},
+			get: function get() {
+				return QUEUE;
+			}
+		});
+		Object.freeze(object);
+
+		object.queue = taskInfo;
+		return object;
+	};
+}
 
 },{}],5:[function(require,module,exports){
 "use strict";
@@ -212,7 +214,11 @@ var _util2 = _interopRequireDefault(_util);
 
 var _runtask = require('./runtask');
 
+var _runtask2 = _interopRequireDefault(_runtask);
+
 var _loader = require('./loader');
+
+var _loader2 = _interopRequireDefault(_loader);
 
 var _lang = require('./lang');
 
@@ -232,10 +238,10 @@ var simplelib = function simplelib(opt) {
 	this.lang = _lang2.default;
 };
 
-simplelib.prototype.loader = _loader.loader;
-simplelib.prototype.runtask = _runtask.runtask;
+simplelib.prototype.loader = _loader2.default;
+simplelib.prototype.runtask = (0, _runtask2.default)(simplelib);
 
-window.simplelib = simplelib;
+window.simplelib || (window.simplelib = simplelib);
 
 },{"./binfo":1,"./lang":2,"./loader":3,"./runtask":4,"./util":6,"./version":7}],6:[function(require,module,exports){
 "use strict";

@@ -5,15 +5,9 @@
   "start": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-<<<<<<< HEAD
     "build": "grunt",
     "watch": "grunt devserver",
     "webpack": "webpack",
-=======
-    "grunt": "grunt",
-    "watch": "grunt devserver",
-    "build": "webpack",
->>>>>>> fcaa0cc3cba17152390a2a53d9584fd7ec534406
     "dev": "webpack-dev-server --inline --open --hot"
   },
   "repository": {
@@ -35,6 +29,7 @@
     "grunt-browserify": "^5.2.0",
     "grunt-cli": "^1.2.0",
     "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-connect": "^1.0.2",
     "grunt-contrib-jshint": "^1.1.0",
     "grunt-contrib-uglify": "^3.3.0",
