@@ -265,6 +265,10 @@ const util = function (sl) {
 
 	object = (o,descriptor,extend) => {
 		return Object.create(merge({},0x5f,o,extend),descriptor)
+	},
+
+	proto = (obj, type, entry) => {
+		return obj && (obj.prototype[type] = entry), obj;
 	}
 	;
 	
@@ -298,6 +302,7 @@ const util = function (sl) {
 		merge: merge,
 		delPrefixMerge: delPrefixMerge,
 		object: object,
+		proto: proto,
 		noop: noop
 	}
 };
