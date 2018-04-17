@@ -99,11 +99,7 @@ const util = function (sl) {
 				case "z": return (zone>0?"+":"-")+zone;
 			}
 		});
-	},
-
-	delay = (ms,func) => {},
-
-	pause = (fn) => {fn()}
+	}
 	;
 
 	// regexp Functions
@@ -302,9 +298,7 @@ const util = function (sl) {
 		merge: merge,
 		delPrefixMerge: delPrefixMerge,
 		object: object,
-		noop: noop,
-		pause: pause,
-		delay: delay // TO-DO
+		noop: noop
 	}
 };
 

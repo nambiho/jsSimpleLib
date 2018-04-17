@@ -7,7 +7,7 @@
 				var sl = new simplelib({langcode:'kr'});
 				//sl.util.dateFormat(new Date(), "w")
 				//console.log(sl.util.dateFormat(new Date(), "w"));
-
+				console.log(sl.bInfo);
 				var key = sl.util.getbyId('key')
 				sl.util.addEvent(document, 'keydown', function(e){
 					key.textContent = e.which
