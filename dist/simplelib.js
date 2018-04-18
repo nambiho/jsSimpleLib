@@ -545,7 +545,7 @@ exports.default = util;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var Version = exports.Version = '0.2.0';
+var Version = exports.Version = '0.3.0';
 
 },{}]},{},[5])(5)
 });
