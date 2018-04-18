@@ -1,8 +1,11 @@
 # Simple javascript library
 started : 2017.12.28   
+version : 0.4.0   
 - It is still incomplete. It will be updated continuously.
 
-
+# Generation module
+- babel
+- Grunt
 
 # object
 ~~~~
