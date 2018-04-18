@@ -30,13 +30,12 @@ module.exports = function (grunt) {
 		},
 		browserify: {
 			dist: {
-				files: {
-					'dist/simplelib.js': 'src/simplelib.js'
-				},
+				src: [ 'src/<%= pkg.name %>.js' ],
+				dest: 'dist/<%= pkg.name %>.js',
 				options: {
 					transform: [['babelify', { presets: "es2015" }]],
 					browserifyOptions: {
-						debug: false
+						standalone: '<%= pkg.name %>'
 					}
 				}
 			}
@@ -61,7 +60,7 @@ module.exports = function (grunt) {
 				livereload: true
 			},
 			files: ['./src/*.js'],
-			tasks: ['jshint','clean:dist','browserify']
+			tasks: ['jshint','browserify:dist']
 		},
 		connect: {
 			server: {
@@ -82,6 +81,6 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-connect');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 
-	grunt.registerTask('default', ['clean:dist','browserify','uglify']);
-	grunt.registerTask('devserver', ['jshint', 'clean:dist', 'browserify', 'connect:server', 'watch']);
+	grunt.registerTask('default', ['clean:dist','browserify:dist','uglify']);
+	grunt.registerTask('devserver', ['jshint', 'clean:dist', 'browserify:dist', 'connect:server', 'watch']);
 }
