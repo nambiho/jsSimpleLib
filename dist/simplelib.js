@@ -527,7 +527,7 @@ var util = function util(sl) {
 		return Object.create(merge({}, 0x5f, o, extend), descriptor);
 	},
 	    proto = function proto(obj, type, entry) {
-		return obj && (obj.prototype[type] = entry), obj;
+		return obj && (obj.prototype ? obj.prototype[type] = entry : obj[type] = entry), obj;
 	};
 
 	return {

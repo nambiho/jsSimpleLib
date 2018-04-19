@@ -294,7 +294,9 @@ const util = function (sl) {
 	},
 
 	proto = (obj, type, entry) => {
-		return obj && (obj.prototype[type] = entry), obj;
+		return obj && (
+			obj.prototype ? (obj.prototype[type] = entry) : (obj[type] = entry)),
+			obj;
 	}
 	;
 	
