@@ -528,6 +528,7 @@ var util = function util(sl) {
 		createElement: createElement,
 		addEvent: addEvent,
 		removeEvent: removeEvent,
+		trigger: trigger,
 		copy: copy,
 		merge: merge,
 		delPrefixMerge: delPrefixMerge,

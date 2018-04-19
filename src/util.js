@@ -298,6 +298,7 @@ const util = function (sl) {
 		createElement: createElement,
 		addEvent: addEvent,
 		removeEvent: removeEvent,
+		trigger: trigger,
 		copy: copy,
 		merge: merge,
 		delPrefixMerge: delPrefixMerge,
