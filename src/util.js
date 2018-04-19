@@ -185,9 +185,18 @@ const util = function (sl) {
 			el.setAttribute(attr,info.attr[attr])
 		}
 		style(el, info.style);
-		for(let ev in info.event){
-			isFunction(info.event[ev]) && addEvent(el, ev, info.event[ev])
-		}
+		// for(let ev in info.event){
+		// 	isFunction(info.event[ev]) && addEvent(el, ev, info.event[ev])
+		// }
+
+		addEvent(el, (function (event) {
+			let ret = {};
+			for (let ev in event) {
+				isFunction(event[ev]) && (ret[ev] = event[ev])
+			}
+			return ret
+		} (info.event)));
+
 		info.child ? el.appendChild(info.child) : 
 			info.html ? el.innerHTML = info.html : 
 				info.text && ((el.textContent = info.text))
@@ -195,18 +204,35 @@ const util = function (sl) {
 		return el
 	},
 
-	addEvent = (t,tp,ev,c) => {
-		t && tp && isFunction(ev) && (t.addEventListener ?
-			t.addEventListener(tp, ev || noop, c || false) :
-			t.attachEvent('on' + tp, ev || noop)
-		)
+	addEvent = (t,/*tp,*/ev,c) => {
+		let isListener = !!t.addEventListener;
+		if (t && ev) {
+			for (let tp in ev) {
+				isFunction (ev[tp]) && isListener ? 
+					t.addEventListener(tp, ev[tp] || noop, c || false) :
+					t.attachEvent('on' + tp, ev[tp] || noop)
+			}
+		}
+		// t && tp && isFunction(ev) && (t.addEventListener ?
+		// 	t.addEventListener(tp, ev || noop, c || false) :
+		// 	t.attachEvent('on' + tp, ev || noop)
+		// )
 	},
 
-	removeEvent = (t,tp,ev) => {
-		t && tp && isFunction(ev) && (t.removeEventListener ?
-			t.removeEventListener(tp, ev || noop) :
-			t.dettachEvent('on' + tp, ev || noop)
-		)
+	removeEvent = (t,/*tp,*/ev) => {
+		let isListener = !!t.removeEventListener;
+		if (t && ev) {
+			for (let tp in ev) {
+				isFunction (ev[tp]) && isListener ? 
+					t.removeEventListener(tp, ev[tp] || noop) :
+					t.dettachEvent('on' + tp, ev[tp] || noop)
+			}
+		}
+
+		// t && tp && isFunction(ev) && (t.removeEventListener ?
+		// 	t.removeEventListener(tp, ev || noop) :
+		// 	t.dettachEvent('on' + tp, ev || noop)
+		// )
 	},
 
 	trigger = function _trigger (_obj,_eventtype) {

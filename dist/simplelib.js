@@ -428,18 +428,46 @@ var util = function util(sl) {
 			el.setAttribute(attr, info.attr[attr]);
 		}
 		style(el, info.style);
-		for (var ev in info.event) {
-			isFunction(info.event[ev]) && addEvent(el, ev, info.event[ev]);
-		}
+		// for(let ev in info.event){
+		// 	isFunction(info.event[ev]) && addEvent(el, ev, info.event[ev])
+		// }
+
+		addEvent(el, function (event) {
+			var ret = {};
+			for (var ev in event) {
+				isFunction(event[ev]) && (ret[ev] = event[ev]);
+			}
+			return ret;
+		}(info.event));
+
 		info.child ? el.appendChild(info.child) : info.html ? el.innerHTML = info.html : info.text && (el.textContent = info.text);
 		info.parent && info.parent.appendChild(el);
 		return el;
 	},
-	    addEvent = function addEvent(t, tp, ev, c) {
-		t && tp && isFunction(ev) && (t.addEventListener ? t.addEventListener(tp, ev || noop, c || false) : t.attachEvent('on' + tp, ev || noop));
+	    addEvent = function addEvent(t, /*tp,*/ev, c) {
+		var isListener = !!t.addEventListener;
+		if (t && ev) {
+			for (var tp in ev) {
+				isFunction(ev[tp]) && isListener ? t.addEventListener(tp, ev[tp] || noop, c || false) : t.attachEvent('on' + tp, ev[tp] || noop);
+			}
+		}
+		// t && tp && isFunction(ev) && (t.addEventListener ?
+		// 	t.addEventListener(tp, ev || noop, c || false) :
+		// 	t.attachEvent('on' + tp, ev || noop)
+		// )
 	},
-	    removeEvent = function removeEvent(t, tp, ev) {
-		t && tp && isFunction(ev) && (t.removeEventListener ? t.removeEventListener(tp, ev || noop) : t.dettachEvent('on' + tp, ev || noop));
+	    removeEvent = function removeEvent(t, /*tp,*/ev) {
+		var isListener = !!t.removeEventListener;
+		if (t && ev) {
+			for (var tp in ev) {
+				isFunction(ev[tp]) && isListener ? t.removeEventListener(tp, ev[tp] || noop) : t.dettachEvent('on' + tp, ev[tp] || noop);
+			}
+		}
+
+		// t && tp && isFunction(ev) && (t.removeEventListener ?
+		// 	t.removeEventListener(tp, ev || noop) :
+		// 	t.dettachEvent('on' + tp, ev || noop)
+		// )
 	},
 	    trigger = function _trigger(_obj, _eventtype) {
 		var _browserEvent = function _browserEvent() {
