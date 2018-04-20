@@ -259,16 +259,15 @@ const util = function (sl) {
 	// object Functions
 	const
 	copy = (target,source,delPrefix=false) => {
-		const rtype = isArray(source) ? [] : {};
-		let result = isObject(target) ? target : rtype;
-		for (let x in source) {
-			if (!delPrefix || x.substr(0,delPrefix.length) !== delPrefix) {
-				result[x] = (isArray(source[x]) ?
-					copy(result[x] || [], source[x], delPrefix) :
-					isPlain(source[x]) ?
-						copy(result[x] || {}, source[x], delPrefix) :
-						source[x])
-			}
+		if (!source) return target;
+		let rtype = isArray(source) ? [] : {},
+		result = isObject(target) ? target : rtype,
+		keys = Object.keys(source), key = '';
+		for (let i = 0 ; i < keys.length ; i++) {
+			key = keys[i];
+			if (delPrefix || key.substr(0, delPrefix.length) === delPrefix) continue;
+			let val = source[key], x = isArray(val) ? [] : isPlain(val) ? {} : false;
+			result[key] = x ? copy(x, val, delPrefix) : val;
 		}
 		return result
 	},

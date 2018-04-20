@@ -492,12 +492,17 @@ var util = function util(sl) {
 	var copy = function copy(target, source) {
 		var delPrefix = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-		var rtype = isArray(source) ? [] : {};
-		var result = isObject(target) ? target : rtype;
-		for (var x in source) {
-			if (!delPrefix || x.substr(0, delPrefix.length) !== delPrefix) {
-				result[x] = isArray(source[x]) ? copy(result[x] || [], source[x], delPrefix) : isPlain(source[x]) ? copy(result[x] || {}, source[x], delPrefix) : source[x];
-			}
+		if (!source) return target;
+		var rtype = isArray(source) ? [] : {},
+		    result = isObject(target) ? target : rtype,
+		    keys = Object.keys(source),
+		    key = '';
+		for (var i = 0; i < keys.length; i++) {
+			key = keys[i];
+			if (delPrefix || key.substr(0, delPrefix.length) === delPrefix) continue;
+			var val = source[key],
+			    x = isArray(val) ? [] : isPlain(val) ? {} : false;
+			result[key] = x ? copy(x, val, delPrefix) : val;
 		}
 		return result;
 	},
