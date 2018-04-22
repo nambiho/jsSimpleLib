@@ -377,31 +377,29 @@ var util = function util(sl) {
 		return (this && this.getElementById ? this : document).getElementById(s);
 	},
 	    getbyClassName = function getbyClassName(s) {
-		// return Array.prototype.slice.call(
-		// 	((this && this.getElementsByClassName) ? this : document).getElementsByClassName(s)
-		// )
-		return Array.from((this && this.getElementsByClassName ? this : document).getElementsByClassName(s));
+		return Array.prototype.slice.call((this && this.getElementsByClassName ? this : document).getElementsByClassName(s));
+		// no support : ie
+		//return Array.from(((this && this.getElementsByClassName) ? this : document).getElementsByClassName(s))
 	},
 	    getbyTagName = function getbyTagName(s) {
-		// return Array.prototype.slice.call(
-		// 	((this && this.getElementsByTagName) ? this : document).getElementsByTagName(s)
-		// )
-		return Array.from((this && this.getElementsByTagName ? this : document).getElementsByTagName(s));
+		return Array.prototype.slice.call((this && this.getElementsByTagName ? this : document).getElementsByTagName(s));
+		// no support : ie
+		//return Array.from(((this && this.getElementsByTagName) ? this : document).getElementsByTagName(s))
 	},
 	    getbyName = function getbyName(s) {
-		// return Array.prototype.slice.call(
-		// 	((this && this.getElementsByName) ? this : document).getElementsByName(s)
-		// )
-		return Array.from((this && this.getElementsByName ? this : document).getElementsByName(s));
+		return Array.prototype.slice.call((this && this.getElementsByName ? this : document).getElementsByName(s));
+		// no support : ie
+		//return Array.from(((this && this.getElementsByName) ? this : document).getElementsByName(s))
 	},
 	    query = function query(s) {
 		var _ret = (this && this.querySelector ? this : document).querySelector(s);
 		return _ret;
 	},
 	    queryall = function queryall(s) {
-		// let m = ((this && this.querySelectorAll) ? this : document).querySelectorAll(s);
-		// return m.forEach ? m : Array.prototype.slice.call(m)
-		return Array.from((this && this.querySelectorAll ? this : document).querySelectorAll(s));
+		var m = (this && this.querySelectorAll ? this : document).querySelectorAll(s);
+		return isArray(m) ? m : Array.prototype.slice.call(m); //m.forEach
+		// no support : ie
+		//return Array.from(((this && this.querySelectorAll) ? this : document).querySelectorAll(s));
 	},
 	    style = function style(el, stl) {
 		if (!isObject(stl)) return el;
@@ -444,11 +442,17 @@ var util = function util(sl) {
 		info.parent && info.parent.appendChild(el);
 		return el;
 	},
+	    getComputedStyle = function setElemMargin(elem, stylename) {
+		if (!elem) return;
+		var style = window.getComputedStyle(elem);
+		if (!style) return;
+		return !stylename ? style : style[stylename];
+	},
 	    addEvent = function addEvent(t, /*tp,*/ev, c) {
 		var isListener = !!t.addEventListener;
 		if (t && ev) {
 			for (var tp in ev) {
-				isFunction(ev[tp]) && isListener ? t.addEventListener(tp, ev[tp] || noop, c || false) : t.attachEvent('on' + tp, ev[tp] || noop);
+				if (isFunction(ev[tp])) isListener ? t.addEventListener(tp, ev[tp] || noop, c || false) : t.attachEvent('on' + tp, ev[tp] || noop);
 			}
 		}
 		// t && tp && isFunction(ev) && (t.addEventListener ?
@@ -460,7 +464,7 @@ var util = function util(sl) {
 		var isListener = !!t.removeEventListener;
 		if (t && ev) {
 			for (var tp in ev) {
-				isFunction(ev[tp]) && isListener ? t.removeEventListener(tp, ev[tp] || noop) : t.dettachEvent('on' + tp, ev[tp] || noop);
+				if (isFunction(ev[tp])) isListener ? t.removeEventListener(tp, ev[tp] || noop) : t.dettachEvent('on' + tp, ev[tp] || noop);
 			}
 		}
 
@@ -559,6 +563,7 @@ var util = function util(sl) {
 		queryall: queryall,
 		style: style,
 		createElement: createElement,
+		getComputedStyle: getComputedStyle,
 		addEvent: addEvent,
 		removeEvent: removeEvent,
 		trigger: trigger,

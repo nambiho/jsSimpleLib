@@ -128,24 +128,27 @@ const util = function (sl) {
 	},
 
 	getbyClassName = function (s) {
-		// return Array.prototype.slice.call(
-		// 	((this && this.getElementsByClassName) ? this : document).getElementsByClassName(s)
-		// )
-		return Array.from(((this && this.getElementsByClassName) ? this : document).getElementsByClassName(s))
+		return Array.prototype.slice.call(
+			((this && this.getElementsByClassName) ? this : document).getElementsByClassName(s)
+		)
+		// no support : ie
+		//return Array.from(((this && this.getElementsByClassName) ? this : document).getElementsByClassName(s))
 	},
 
 	getbyTagName = function (s) {
-		// return Array.prototype.slice.call(
-		// 	((this && this.getElementsByTagName) ? this : document).getElementsByTagName(s)
-		// )
-		return Array.from(((this && this.getElementsByTagName) ? this : document).getElementsByTagName(s))
+		return Array.prototype.slice.call(
+			((this && this.getElementsByTagName) ? this : document).getElementsByTagName(s)
+		)
+		// no support : ie
+		//return Array.from(((this && this.getElementsByTagName) ? this : document).getElementsByTagName(s))
 	},
 	
 	getbyName = function (s) {
-		// return Array.prototype.slice.call(
-		// 	((this && this.getElementsByName) ? this : document).getElementsByName(s)
-		// )
-		return Array.from(((this && this.getElementsByName) ? this : document).getElementsByName(s))
+		return Array.prototype.slice.call(
+			((this && this.getElementsByName) ? this : document).getElementsByName(s)
+		)
+		// no support : ie
+		//return Array.from(((this && this.getElementsByName) ? this : document).getElementsByName(s))
 	},
 
 	query = function (s) {
@@ -154,9 +157,10 @@ const util = function (sl) {
 	},
 
 	queryall = function (s) {
-		// let m = ((this && this.querySelectorAll) ? this : document).querySelectorAll(s);
-		// return m.forEach ? m : Array.prototype.slice.call(m)
-		return Array.from(((this && this.querySelectorAll) ? this : document).querySelectorAll(s));
+		let m = ((this && this.querySelectorAll) ? this : document).querySelectorAll(s);
+		return isArray(m) ? m : Array.prototype.slice.call(m) //m.forEach
+		// no support : ie
+		//return Array.from(((this && this.querySelectorAll) ? this : document).querySelectorAll(s));
 	},
 
 	style = (el,stl) => {
@@ -204,13 +208,21 @@ const util = function (sl) {
 		return el
 	},
 
+	getComputedStyle = function setElemMargin (elem, stylename) {
+		if (!elem) return;
+		let style = window.getComputedStyle(elem);
+		if (!style) return;
+		return !stylename ? style : style[stylename]
+	},
+
 	addEvent = (t,/*tp,*/ev,c) => {
 		let isListener = !!t.addEventListener;
 		if (t && ev) {
 			for (let tp in ev) {
-				isFunction (ev[tp]) && isListener ? 
-					t.addEventListener(tp, ev[tp] || noop, c || false) :
-					t.attachEvent('on' + tp, ev[tp] || noop)
+				if (isFunction (ev[tp]))
+					isListener ? 
+						t.addEventListener(tp, ev[tp] || noop, c || false) :
+						t.attachEvent('on' + tp, ev[tp] || noop)
 			}
 		}
 		// t && tp && isFunction(ev) && (t.addEventListener ?
@@ -223,9 +235,10 @@ const util = function (sl) {
 		let isListener = !!t.removeEventListener;
 		if (t && ev) {
 			for (let tp in ev) {
-				isFunction (ev[tp]) && isListener ? 
-					t.removeEventListener(tp, ev[tp] || noop) :
-					t.dettachEvent('on' + tp, ev[tp] || noop)
+				if (isFunction (ev[tp]))
+					isListener ? 
+						t.removeEventListener(tp, ev[tp] || noop) :
+						t.dettachEvent('on' + tp, ev[tp] || noop)
 			}
 		}
 
@@ -323,6 +336,7 @@ const util = function (sl) {
 		queryall: queryall,
 		style: style,
 		createElement: createElement,
+		getComputedStyle: getComputedStyle,
 		addEvent: addEvent,
 		removeEvent: removeEvent,
 		trigger: trigger,
