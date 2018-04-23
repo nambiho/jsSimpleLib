@@ -251,7 +251,7 @@ const util = function (sl) {
 	trigger = function _trigger (_obj,_eventtype) {
 		const _browserEvent = () => {
 			let ev;
-			if(typeof(Event) === 'function') {
+			if(isFunction(Event)) { //typeof(Event) === 'function'
 				ev = new Event(_eventtype,{
 					bubbles : true,
 					cancelBubble : true,
