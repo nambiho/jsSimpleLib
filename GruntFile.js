@@ -51,7 +51,8 @@ module.exports = function (grunt) {
 				expr: true,
 				globals: {
 					console: true,
-					simplelib: true
+					simplelib: true,
+					module: true
 				}
 			}
 		},

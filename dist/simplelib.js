@@ -1,4 +1,42 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.simplelib = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.default = ajax;
+var typeOptions = {};
+function ajax(options) {
+	function getHttp() {
+		var cHttp = new XMLHttpRequest();
+		if (window.XDomainRequest) cHttp = new XDomainRequest();
+		return cHttp || null;
+
+		// if (cHttp) {
+		// 	/**
+		// 	 * res.writeHead(200, {
+		// 	 * 'Content-Type': 'text/html; charset=utf-8',
+		// 	 * 'Access-Control-Allow-Origin': 'http://localhost:8080',
+		// 	 * 'Access-Control-Allow-Credentials': true,
+		// 	 * 'Access-Control-Allow-Headers': 'X-Custom-Header'
+		// 	 * });
+		// 	 */
+
+		// 	cHttp.open('get', 'http://localhost:9000', true);
+		// 	cHttp.withCredentials = true; //ie10+
+		// 	cHttp.setRequestHeader('X-Request-Header', 'XRequest');
+		// 	cHttp.onreadystatechange = function () {console.log(cHttp.readyState)};
+		// 	cHttp.onload = function () {console.log('onload')}
+		// 	cHttp.onerror = function () {console.log('onerror')}
+		// 	cHttp.send();
+		// }
+	}
+
+	//TO-DO
+	return function ajaxProcess() {};
+}
+
+},{}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -23,7 +61,7 @@ function bInfo() {
 	};
 }
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -50,7 +88,7 @@ function lang() {
 	};
 }
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 
 "use strict";
 
@@ -122,7 +160,7 @@ function loader(jsURL, fn, option) {
 	});
 }
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 
 "use strict";
 
@@ -157,7 +195,7 @@ function runtask(sl) {
 		};
 		var apply = function apply(func, object, argv) {
 			return function () {
-				func.apply(object, argv);
+				func.apply(object, sl.util.isArray(argv) ? argv : [argv]);
 			};
 		};
 		var object = sl.util.object({
@@ -169,16 +207,13 @@ function runtask(sl) {
 			run: function run(tasks) {
 				tasks && this.add(tasks);
 				var proc = void 0,
-				    async = void 0,
-				    func = void 0,
-				    object = void 0,
 				    argv = void 0;
 
 				while (1) {
 					if (QUEUE.length === 0) break;
-					proc = QUEUE.splice(0, 1)[0], async = proc.async, func = proc.func, object = proc.object || null, argv = sl.util.isArray(proc.argv) ? proc.argv : [proc.argv];
-					if (sl.util.isFunction(func)) {
-						async ? setTimeout(apply(func, object, argv), 0) : apply(func, object, argv)();
+					proc = QUEUE.splice(0, 1)[0], argv = sl.util.isArray(proc.argv) ? proc.argv : [proc.argv];
+					if (sl.util.isFunction(proc.func)) {
+						proc.async ? setTimeout(apply(proc.func, proc.object || null, argv), 40) : apply(proc.func, proc.object || null, argv)();
 					}
 					doneQUEUE.push(proc);
 				}
@@ -200,7 +235,7 @@ function runtask(sl) {
 	};
 }
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 
 var _version = require('./version');
@@ -223,6 +258,10 @@ var _lang = require('./lang');
 
 var _lang2 = _interopRequireDefault(_lang);
 
+var _ajax = require('./ajax');
+
+var _ajax2 = _interopRequireDefault(_ajax);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -239,10 +278,11 @@ var simplelib = function simplelib(opt) {
 
 simplelib.prototype.loader = _loader2.default;
 simplelib.prototype.runtask = (0, _runtask2.default)(simplelib);
+simplelib.prototype.ajax = _ajax2.default;
 
 module.exports = simplelib;
 
-},{"./binfo":1,"./lang":2,"./loader":3,"./runtask":4,"./util":6,"./version":7}],6:[function(require,module,exports){
+},{"./ajax":1,"./binfo":2,"./lang":3,"./loader":4,"./runtask":5,"./util":7,"./version":8}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -476,7 +516,8 @@ var util = function util(sl) {
 	    trigger = function _trigger(_obj, _eventtype) {
 		var _browserEvent = function _browserEvent() {
 			var ev = void 0;
-			if (typeof Event === 'function') {
+			if (isFunction(Event)) {
+				//typeof(Event) === 'function'
 				ev = new Event(_eventtype, {
 					bubbles: true,
 					cancelBubble: true,
@@ -578,7 +619,7 @@ var util = function util(sl) {
 
 exports.default = util;
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -586,5 +627,5 @@ Object.defineProperty(exports, "__esModule", {
 });
 var Version = exports.Version = '0.4.0';
 
-},{}]},{},[5])(5)
+},{}]},{},[6])(6)
 });

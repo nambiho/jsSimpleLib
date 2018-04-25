@@ -6,6 +6,7 @@ import util from './util';
 import runtask from './runtask';
 import loader from './loader';
 import lang from "./lang";
+import ajax from "./ajax";
 
 class simplelib {
 	constructor (opt) {
@@ -18,5 +19,6 @@ class simplelib {
 }
 simplelib.prototype.loader = loader;
 simplelib.prototype.runtask = runtask(simplelib);
+simplelib.prototype.ajax = ajax;
 
-module.exports = simplelib
+module.exports = simplelib;

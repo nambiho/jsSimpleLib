@@ -25,7 +25,7 @@ export default function runtask (sl) { return function(taskInfo) {
 		return tmp;
 	};
 	const apply = function (func, object, argv) {
-		return function () {func.apply(object, argv)}
+		return function () {func.apply(object, sl.util.isArray(argv)?argv:[argv])}
 	};
 	const object = sl.util.object({
 		add : function (tasks) {
@@ -35,19 +35,16 @@ export default function runtask (sl) { return function(taskInfo) {
 		},
 		run : function (tasks) {
 			tasks && this.add(tasks)
-			let proc, async, func, object, argv;
+			let proc, argv;
 
 			while (1) {
 				if (QUEUE.length === 0) break;
 				proc = QUEUE.splice(0,1)[0],
-				async = proc.async,
-				func = proc.func,
-				object = proc.object||null,
 				argv = (sl.util.isArray(proc.argv) ? proc.argv : [proc.argv]);
-				if (sl.util.isFunction(func)) {
-					(async) ?
-					setTimeout(apply(func, object, argv), 0) :
-					apply(func, object, argv)()
+				if (sl.util.isFunction(proc.func)) {
+					(proc.async) ?
+					setTimeout(apply(proc.func, proc.object||null, argv), 40) :
+					apply(proc.func, proc.object||null, argv)()
 				}
 				doneQUEUE.push(proc);
 			}
