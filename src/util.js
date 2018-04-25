@@ -1,9 +1,8 @@
 "use strict";
 
-import lang from './lang';
-
-export const util = (function () {
+const util = function () {
 	const 
+	Super = this,
 	toString = Object.prototype.toString,
 	jsonctor = JSON.constructor,
 	noop = function () {};
@@ -96,7 +95,8 @@ export const util = (function () {
 				case "n": return n;
 				case "ss": return ("0" + s).substr(-2);
 				case "s": return s;
-				case "w": return lang((option&&option.langcode)||'').date.week[d];
+				//case "w": return lang((option&&option.langcode)||'').date.week[d];
+				case "w": return (Super&&Super.option.locale.date.week[d])||'';
 				case "z": return (zone>0?"+":"-")+zone;
 			}
 		});
@@ -350,6 +350,9 @@ export const util = (function () {
 		proto: proto,
 		noop: noop
 	}
-}());
+};
 
-//export default util;
+export default util();
+export function set (nm) {
+	return util.call(nm)
+}

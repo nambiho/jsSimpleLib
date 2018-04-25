@@ -2,17 +2,24 @@
 
 import {Version} from './version';
 import {bInfo} from './binfo';
-import {util} from './util';
+import {default as util, set} from './util';
 import runtask from './runtask';
 import loader from './loader';
 import lang from "./lang";
 import ajax from "./ajax";
 
-//const _util = util();
+
+const locale = {
+	date: {
+		week: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+	}
+};
+
 class simplelib {
 	constructor(opt) {
+		opt.locale = util.merge(opt.locale||{}, locale);
 		this.option = util.merge({}, opt);
-		this.util = util;
+		this.util = set(this);
 		this.bInfo = bInfo;
 		this.version = Version;
 		this.lang = lang;

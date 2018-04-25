@@ -286,6 +286,8 @@ var _binfo = require('./binfo');
 
 var _util = require('./util');
 
+var _util2 = _interopRequireDefault(_util);
+
 var _runtask = require('./runtask');
 
 var _runtask2 = _interopRequireDefault(_runtask);
@@ -306,18 +308,24 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-//const _util = util();
+var locale = {
+	date: {
+		week: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+	}
+};
+
 var simplelib = function simplelib(opt) {
 	_classCallCheck(this, simplelib);
 
-	this.option = _util.util.merge({}, opt);
-	this.util = _util.util;
+	opt.locale = _util2.default.merge(opt.locale || {}, locale);
+	this.option = _util2.default.merge({}, opt);
+	this.util = (0, _util.set)(this);
 	this.bInfo = _binfo.bInfo;
 	this.version = _version.Version;
 	this.lang = _lang2.default;
 };
 
-_util.util.proto(simplelib, {
+_util2.default.proto(simplelib, {
 	ajax: _ajax2.default,
 	runtask: _runtask2.default,
 	loader: _loader2.default
@@ -333,16 +341,10 @@ if (module) module.exports = simplelib;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.util = undefined;
-
-var _lang = require('./lang');
-
-var _lang2 = _interopRequireDefault(_lang);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var util = exports.util = function () {
-	var toString = Object.prototype.toString,
+exports.set = set;
+var util = function util() {
+	var Super = this,
+	    toString = Object.prototype.toString,
 	    jsonctor = JSON.constructor,
 	    noop = function noop() {};
 
@@ -438,8 +440,9 @@ var util = exports.util = function () {
 					return ("0" + s).substr(-2);
 				case "s":
 					return s;
+				//case "w": return lang((option&&option.langcode)||'').date.week[d];
 				case "w":
-					return (0, _lang2.default)(option && option.langcode || '').date.week[d];
+					return Super && Super.option.locale.date.week[d] || '';
 				case "z":
 					return (zone > 0 ? "+" : "-") + zone;
 			}
@@ -671,11 +674,14 @@ var util = exports.util = function () {
 		proto: proto,
 		noop: noop
 	};
-}();
+};
 
-//export default util;
+exports.default = util();
+function set(nm) {
+	return util.call(nm);
+}
 
-},{"./lang":3}],8:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
