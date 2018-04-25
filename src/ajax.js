@@ -1,6 +1,7 @@
 'use strict';
-const typeOptions = {};
+
 export default function ajax (options) {
+	const Super = this;
 	function getHttp () {
 		var cHttp = new XMLHttpRequest();
 		if (window.XDomainRequest) cHttp = new XDomainRequest();
@@ -26,6 +27,29 @@ export default function ajax (options) {
 		// }
 	}
 
-	//TO-DO
-	return function ajaxProcess(){}
+	class ajaxProcess {
+		constructor (options) {
+			this.settings = Super.util.merge({}, options);
+			this.url = this.settings.url||'';
+			this.http = getHttp();
+			this.setOption();
+			return this
+		}
+
+		send (resolve, reject) {
+			this.then(() => {
+				this.http.send()
+			});
+		}
+
+		getOption (optionName) {
+			return this.settings[optionName];
+		}
+
+		setOption (...option) {
+			
+		}
+	}
+
+	return new ajaxProcess(options);
 }

@@ -4,9 +4,15 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 exports.default = ajax;
-var typeOptions = {};
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 function ajax(options) {
+	var Super = this;
 	function getHttp() {
 		var cHttp = new XMLHttpRequest();
 		if (window.XDomainRequest) cHttp = new XDomainRequest();
@@ -32,8 +38,40 @@ function ajax(options) {
 		// }
 	}
 
-	//TO-DO
-	return function ajaxProcess() {};
+	var ajaxProcess = function () {
+		function ajaxProcess(options) {
+			_classCallCheck(this, ajaxProcess);
+
+			this.settings = Super.util.merge({}, options);
+			this.url = this.settings.url || '';
+			this.http = getHttp();
+			this.setOption();
+			return this;
+		}
+
+		_createClass(ajaxProcess, [{
+			key: 'send',
+			value: function send(resolve, reject) {
+				var _this = this;
+
+				this.then(function () {
+					_this.http.send();
+				});
+			}
+		}, {
+			key: 'getOption',
+			value: function getOption(optionName) {
+				return this.settings[optionName];
+			}
+		}, {
+			key: 'setOption',
+			value: function setOption() {}
+		}]);
+
+		return ajaxProcess;
+	}();
+
+	return new ajaxProcess(options);
 }
 
 },{}],2:[function(require,module,exports){
@@ -42,9 +80,8 @@ function ajax(options) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.bInfo = bInfo;
-function bInfo() {
-	var b = navigator.userAgent.toLowerCase(),
+var bInfo = exports.bInfo = function (nav) {
+	var b = nav.userAgent.toLowerCase(),
 	    ie = /msie [6-8]/.test(b),
 	    ie9 = /msie 9/.test(b),
 	    ie10 = /msie 10/.test(b),
@@ -59,7 +96,7 @@ function bInfo() {
 		isChrome: chrome, isSafari: safari, isIE11: ie11, isIE10: ie10, isIE9: ie9,
 		isOpera: opera, isFirefox: firefox, isWhale: whale, ieMore: ie, ios: /iphone|ipad/.test(b)
 	};
-}
+}(navigator);
 
 },{}],3:[function(require,module,exports){
 "use strict";
@@ -168,83 +205,86 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.default = runtask;
-function runtask(sl) {
-	return function (taskInfo) {
-		/*
-  taskInfo = {
-  	async: true/false
-  	func: function
-  	object: thisArg
-  	argv: arguments
-  }
-  */
+function runtask(taskInfo) {
+	/*
+ taskInfo = {
+ 	async: true/false
+ 	func: function
+ 	object: thisArg
+ 	argv: arguments
+ }
+ */
 
-		var QUEUE = [],
-		    doneQUEUE = [];
-		var getTasks = function getTasks(tasks) {
-			var tmp = [];
-			if (sl.util.isArray(tasks)) {
-				tmp = tmp.concat(tasks);
-			} else if (sl.util.isJSON(tasks)) {
-				tmp = tmp.concat([tasks]);
-			}
-			tmp = tmp.filter(function (entry) {
-				return 'func' in entry;
-			});
-			return tmp;
-		};
-		var apply = function apply(func, object, argv) {
-			return function () {
-				func.apply(object, sl.util.isArray(argv) ? argv : [argv]);
-			};
-		};
-		var object = sl.util.object({
-			add: function add(tasks) {
-				var tmp = getTasks(tasks);
-				QUEUE = QUEUE.concat(tmp);
-				return this;
-			},
-			run: function run(tasks) {
-				tasks && this.add(tasks);
-				var proc = void 0,
-				    argv = void 0;
-
-				while (1) {
-					if (QUEUE.length === 0) break;
-					proc = QUEUE.splice(0, 1)[0], argv = sl.util.isArray(proc.argv) ? proc.argv : [proc.argv];
-					if (sl.util.isFunction(proc.func)) {
-						proc.async ? setTimeout(apply(proc.func, proc.object || null, argv), 40) : apply(proc.func, proc.object || null, argv)();
-					}
-					doneQUEUE.push(proc);
-				}
-				return this;
-			}
+	var QUEUE = [],
+	    doneQUEUE = [],
+	    Super = this;
+	var getTasks = function getTasks(tasks) {
+		var tmp = [];
+		if (Super.util.isArray(tasks)) {
+			tmp = tmp.concat(tasks);
+		} else if (Super.util.isJSON(tasks)) {
+			tmp = tmp.concat([tasks]);
+		} else if (Super.util.isFunction(tasks)) {
+			tmp = [{ func: tasks }];
+		}
+		tmp = tmp.filter(function (entry) {
+			return 'func' in entry;
 		});
-		Object.defineProperty(object, 'queue', {
-			set: function set(tasks) {
-				QUEUE = getTasks(tasks);
-			},
-			get: function get() {
-				return QUEUE;
-			}
-		});
-		Object.freeze(object);
-
-		object.queue = taskInfo;
-		return object;
+		return tmp;
 	};
+	var apply = function apply(func, object, argv) {
+		return function () {
+			func.apply(object, Super.util.isArray(argv) ? argv : [argv]);
+		};
+	};
+	var object = Super.util.object({
+		add: function add(tasks) {
+			var tmp = getTasks(tasks);
+			QUEUE = QUEUE.concat(tmp);
+			return this;
+		},
+		run: function run(tasks) {
+			tasks && this.add(tasks);
+			var proc = void 0,
+			    argv = void 0;
+
+			while (1) {
+				if (QUEUE.length === 0) break;
+				proc = QUEUE.splice(0, 1)[0], argv = Super.util.isArray(proc.argv) ? proc.argv : [proc.argv];
+				if (Super.util.isFunction(proc.func)) {
+					proc.async ? setTimeout(apply(proc.func, proc.object || null, argv), 40) : apply(proc.func, proc.object || null, argv)();
+				}
+				doneQUEUE.push(proc);
+			}
+			return this;
+		}
+	});
+	Object.defineProperty(object, 'queue', {
+		set: function set(tasks) {
+			QUEUE = getTasks(tasks);
+		},
+		get: function get() {
+			return QUEUE;
+		}
+	});
+	Object.freeze(object);
+
+	object.queue = taskInfo;
+	return object;
 }
 
 },{}],6:[function(require,module,exports){
 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
 var _version = require('./version');
 
 var _binfo = require('./binfo');
 
 var _util = require('./util');
-
-var _util2 = _interopRequireDefault(_util);
 
 var _runtask = require('./runtask');
 
@@ -266,21 +306,26 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+//const _util = util();
 var simplelib = function simplelib(opt) {
 	_classCallCheck(this, simplelib);
 
-	this.util = (0, _util2.default)(this);
-	this.option = this.util.merge({ langcd: 'en' }, opt);
-	this.bInfo = (0, _binfo.bInfo)();
+	this.option = _util.util.merge({}, opt);
+	this.util = _util.util;
+	this.bInfo = _binfo.bInfo;
 	this.version = _version.Version;
 	this.lang = _lang2.default;
 };
 
-simplelib.prototype.loader = _loader2.default;
-simplelib.prototype.runtask = (0, _runtask2.default)(simplelib);
-simplelib.prototype.ajax = _ajax2.default;
+_util.util.proto(simplelib, {
+	ajax: _ajax2.default,
+	runtask: _runtask2.default,
+	loader: _loader2.default
+});
 
-module.exports = simplelib;
+exports.default = simplelib;
+
+if (module) module.exports = simplelib;
 
 },{"./ajax":1,"./binfo":2,"./lang":3,"./loader":4,"./runtask":5,"./util":7,"./version":8}],7:[function(require,module,exports){
 "use strict";
@@ -288,8 +333,15 @@ module.exports = simplelib;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-var util = function util(sl) {
+exports.util = undefined;
 
+var _lang = require('./lang');
+
+var _lang2 = _interopRequireDefault(_lang);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var util = exports.util = function () {
 	var toString = Object.prototype.toString,
 	    jsonctor = JSON.constructor,
 	    noop = function noop() {};
@@ -387,7 +439,7 @@ var util = function util(sl) {
 				case "s":
 					return s;
 				case "w":
-					return sl.lang(option && option.langcode || '').date.week[d];
+					return (0, _lang2.default)(option && option.langcode || '').date.week[d];
 				case "z":
 					return (zone > 0 ? "+" : "-") + zone;
 			}
@@ -458,8 +510,8 @@ var util = function util(sl) {
   	html:'<span>createElement</span>'
   	text:'createElement',
   	parent:
-    }
-   */
+  }
+  */
 		if (!info.dom) return null;
 		var el = document.createElement(info.dom);
 		for (var attr in info.attr) {
@@ -576,8 +628,12 @@ var util = function util(sl) {
 	    object = function object(o, descriptor, extend) {
 		return Object.create(merge({}, 0x5f, o, extend), descriptor);
 	},
-	    proto = function proto(obj, type, entry) {
-		return obj && (obj.prototype ? obj.prototype[type] = entry : obj[type] = entry), obj;
+	    proto = function proto(obj, source) {
+		if (!obj) return obj;
+		isJSON(source) && Object.keys(source).forEach(function (key, idx) {
+			obj.prototype ? obj.prototype[key] = source[key] : obj[key] = source[key];
+		});
+		return obj;
 	};
 
 	return {
@@ -615,11 +671,11 @@ var util = function util(sl) {
 		proto: proto,
 		noop: noop
 	};
-};
+}();
 
-exports.default = util;
+//export default util;
 
-},{}],8:[function(require,module,exports){
+},{"./lang":3}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

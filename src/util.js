@@ -1,7 +1,8 @@
 "use strict";
 
-const util = function (sl) {
+import lang from './lang';
 
+export const util = (function () {
 	const 
 	toString = Object.prototype.toString,
 	jsonctor = JSON.constructor,
@@ -95,7 +96,7 @@ const util = function (sl) {
 				case "n": return n;
 				case "ss": return ("0" + s).substr(-2);
 				case "s": return s;
-				case "w": return sl.lang((option&&option.langcode)||'').date.week[d];
+				case "w": return lang((option&&option.langcode)||'').date.week[d];
 				case "z": return (zone>0?"+":"-")+zone;
 			}
 		});
@@ -181,8 +182,8 @@ const util = function (sl) {
 			html:'<span>createElement</span>'
 			text:'createElement',
 			parent:
-		  }
-		 */
+		}
+		*/
 		if (!info.dom) return null;
 		var el = document.createElement(info.dom);
 		for(let attr in info.attr) {
@@ -305,10 +306,12 @@ const util = function (sl) {
 		return Object.create(merge({},0x5f,o,extend),descriptor)
 	},
 
-	proto = (obj, type, entry) => {
-		return obj && (
-			obj.prototype ? (obj.prototype[type] = entry) : (obj[type] = entry)),
-			obj;
+	proto = (obj, source) => {
+		if (!obj) return obj;
+		isJSON(source) && Object.keys(source).forEach(function (key, idx) {
+			obj.prototype ? (obj.prototype[key] = source[key]) : (obj[key] = source[key])
+		});
+		return obj;
 	}
 	;
 	
@@ -347,6 +350,6 @@ const util = function (sl) {
 		proto: proto,
 		noop: noop
 	}
-};
+}());
 
-export default util;
+//export default util;

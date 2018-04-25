@@ -1,7 +1,7 @@
 
 "use strict";
 
-export default function runtask (sl) { return function(taskInfo) {
+export default function runtask (taskInfo) {
 	/*
 	taskInfo = {
 		async: true/false
@@ -11,13 +11,15 @@ export default function runtask (sl) { return function(taskInfo) {
 	}
 	*/
 
-	let QUEUE = [], doneQUEUE = [];
+	let QUEUE = [], doneQUEUE = [], Super=this;
 	const getTasks = (tasks) => {
 		let tmp = [];
-		if (sl.util.isArray(tasks)) {
+		if (Super.util.isArray(tasks)) {
 			tmp = tmp.concat(tasks)
-		} else if (sl.util.isJSON(tasks)) {
+		} else if (Super.util.isJSON(tasks)) {
 			tmp = tmp.concat([tasks])
+		} else if (Super.util.isFunction(tasks)) {
+			tmp = [{func: tasks}]
 		}
 		tmp = tmp.filter(function (entry) {
 			return ('func' in entry)
@@ -25,9 +27,9 @@ export default function runtask (sl) { return function(taskInfo) {
 		return tmp;
 	};
 	const apply = function (func, object, argv) {
-		return function () {func.apply(object, sl.util.isArray(argv)?argv:[argv])}
+		return function () {func.apply(object, Super.util.isArray(argv)?argv:[argv])}
 	};
-	const object = sl.util.object({
+	const object = Super.util.object({
 		add : function (tasks) {
 			let tmp = getTasks(tasks);
 			QUEUE = QUEUE.concat(tmp);
@@ -40,8 +42,8 @@ export default function runtask (sl) { return function(taskInfo) {
 			while (1) {
 				if (QUEUE.length === 0) break;
 				proc = QUEUE.splice(0,1)[0],
-				argv = (sl.util.isArray(proc.argv) ? proc.argv : [proc.argv]);
-				if (sl.util.isFunction(proc.func)) {
+				argv = (Super.util.isArray(proc.argv) ? proc.argv : [proc.argv]);
+				if (Super.util.isFunction(proc.func)) {
 					(proc.async) ?
 					setTimeout(apply(proc.func, proc.object||null, argv), 40) :
 					apply(proc.func, proc.object||null, argv)()
@@ -63,4 +65,4 @@ export default function runtask (sl) { return function(taskInfo) {
 
 	object.queue = taskInfo;
 	return object
-}}
+}

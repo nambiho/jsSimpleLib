@@ -1,7 +1,7 @@
 "use strict";
 
-export function bInfo () {
-	var b = navigator.userAgent.toLowerCase(),
+export const bInfo = (function (nav) {
+	var b = nav.userAgent.toLowerCase(),
 	ie = /msie [6-8]/.test(b),
 	ie9 = /msie 9/.test(b),
 	ie10 = /msie 10/.test(b),
@@ -17,4 +17,4 @@ export function bInfo () {
 		isChrome:chrome,isSafari:safari,isIE11:ie11,isIE10:ie10,isIE9:ie9,
 		isOpera:opera,isFirefox:firefox,isWhale:whale,ieMore:ie,ios:/iphone|ipad/.test(b)
 	}
-}
+}(navigator))

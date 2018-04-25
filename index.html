@@ -10,7 +10,11 @@
 				var key = sl.util.getbyId('key')
 				sl.util.addEvent(document, 'keydown', function(e){
 					key.textContent = e.which
-				})
+				});
+				
+				sl.ajax({
+					url: 'http://'
+				});
 			})	
 		</script>
 		<style>

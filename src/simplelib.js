@@ -2,23 +2,28 @@
 
 import {Version} from './version';
 import {bInfo} from './binfo';
-import util from './util';
+import {util} from './util';
 import runtask from './runtask';
 import loader from './loader';
 import lang from "./lang";
 import ajax from "./ajax";
 
+//const _util = util();
 class simplelib {
-	constructor (opt) {
-		this.util = util(this);
-		this.option = this.util.merge({langcd:'en'}, opt);
-		this.bInfo = bInfo();
+	constructor(opt) {
+		this.option = util.merge({}, opt);
+		this.util = util;
+		this.bInfo = bInfo;
 		this.version = Version;
 		this.lang = lang;
 	}
 }
-simplelib.prototype.loader = loader;
-simplelib.prototype.runtask = runtask(simplelib);
-simplelib.prototype.ajax = ajax;
 
-module.exports = simplelib;
+util.proto(simplelib, {
+	ajax: ajax,
+	runtask: runtask,
+	loader: loader
+});
+
+export default simplelib;
+if (module) module.exports = simplelib;
