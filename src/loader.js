@@ -1,7 +1,6 @@
-
-"use strict";
-
 export default function loader (jsURL, fn, option){
+	'use strict';
+	
 	/**
 	 * Worker does not support.
 	 * The only parent element is document.head.

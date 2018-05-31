@@ -1,68 +1,98 @@
-
-"use strict";
-
-export default function runtask (taskInfo) {
+export default function runtask (options) {
+	'use strict';
 	/*
-	taskInfo = {
-		async: true/false
-		func: function
-		object: thisArg
-		argv: arguments
+	option = {
+		async : true | false [default is true],
+		tasks : [{
+			func: function
+			object: thisArg
+			argv: arguments
+		}]
 	}
 	*/
 
-	let QUEUE = [], doneQUEUE = [], Super=this;
-	const getTasks = (tasks) => {
+	let Super=this;
+	function _convertArray (source) {
 		let tmp = [];
-		if (Super.util.isArray(tasks)) {
-			tmp = tmp.concat(tasks)
-		} else if (Super.util.isJSON(tasks)) {
-			tmp = tmp.concat([tasks])
-		} else if (Super.util.isFunction(tasks)) {
-			tmp = [{func: tasks}]
+		if (Super.util.isArray(source)) {
+			tmp = tmp.concat(source)
+		} else if (Super.util.isJSON(source)) {
+			tmp = tmp.concat([source])
+		} else if (Super.util.isFunction(source)) {
+			tmp = [{func: source}]
 		}
-		tmp = tmp.filter(function (entry) {
-			return ('func' in entry)
-		});
 		return tmp;
-	};
+	}
+
+	class QUEUE {
+		constructor (source, filter) {
+			this.data = [];
+			this.push(source);
+			this.filter = filter;
+		}
+		get length () {return this.data.length}
+		get isEmpty () {
+			return this.length === 0
+		}
+		push (source) {
+			let tmp = _convertArray(source);
+			if (this.filter) tmp = this.filter(tmp)
+			this.data = this.data.concat(tmp);
+		}
+		pop () {
+			if (this.length == 0) return;
+			return this.data.shift();
+		}
+	}
+
+	let qu = new QUEUE(options.tasks||[], function (src) {
+		return src.filter(function (entry) {
+			return ('func' in entry) && Super.util.isFunction(entry.func)
+		});
+	}),
+	tOut, active = false,
+	isPromise = window.Promise && Super.util.isNative(Promise),
+	promise = isPromise && Super.util.delay(5)
+	;
+	
 	const apply = function (func, object, argv) {
-		return function () {func.apply(object, Super.util.isArray(argv)?argv:[argv])}
+		return () => func.apply(object, Super.util.isArray(argv)?argv:[argv])
 	};
+
+	const process = function taskRunProcess() {
+		if (qu.isEmpty) {active=false; return}
+		var proc, argv;
+		while(1) {
+			if (!(proc = qu.pop())) {active=false; return}
+			if (Super.util.isFunction(proc.func)) {
+				argv = (Super.util.isArray(proc.argv) ? proc.argv : [proc.argv]);
+				if (isPromise) promise&&promise.then(apply(proc.func, proc.object||null, argv));
+				else apply(proc.func, proc.object||null, argv)();
+			}
+		}
+	};
+
+	// nextTick을 보장 할 수 있는 솔루션을 만들어야한다.
 	const object = Super.util.object({
+		async : (options.async!==false),
 		add : function (tasks) {
-			let tmp = getTasks(tasks);
-			QUEUE = QUEUE.concat(tmp);
+			qu.push(tasks);
 			return this
 		},
 		run : function (tasks) {
-			tasks && this.add(tasks)
-			let proc, argv;
-
-			while (1) {
-				if (QUEUE.length === 0) break;
-				proc = QUEUE.splice(0,1)[0],
-				argv = (Super.util.isArray(proc.argv) ? proc.argv : [proc.argv]);
-				if (Super.util.isFunction(proc.func)) {
-					(proc.async) ?
-					setTimeout(apply(proc.func, proc.object||null, argv), 40) :
-					apply(proc.func, proc.object||null, argv)()
-				}
-				doneQUEUE.push(proc);
+			tasks && qu.push(tasks);
+			if (!active) {
+				if (this.async) {
+					active = true;
+					if (isPromise) process();
+					else setTimeout(process, 10);
+				} else process();
 			}
 			return this
 		}
 	});
-	Object.defineProperty(object, 'queue', {
-		set : function (tasks) {
-			QUEUE = getTasks(tasks)
-		},
-		get : function () {
-			return QUEUE
-		}
-	});
+	
 	Object.freeze(object);
 
-	object.queue = taskInfo;
 	return object
 }

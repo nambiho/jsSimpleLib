@@ -2,6 +2,12 @@ const http = require('http');
 const fs = require('fs');
 const URL = require('url');
 
+const origin = {
+	'Access-Control-Allow-Origin': 'http://localhost:8000',
+	'Access-Control-Allow-Credentials': true,
+	'Access-Control-Allow-Headers': 'X-Response1'
+}
+
 function createServer (app, port) {
 	let server = http.createServer(app);
 	server.listen(port, function () {
@@ -14,7 +20,14 @@ createServer((req, res) => {
 	const url = URL.parse(req.url);
 	const paths = ['/build','/public','/dist','/lib'];
 
-	
+	if (method == 'POST') {
+		var jsonString=[];
+		req.on('data', (chunk) => {
+			jsonString.push(chunk);
+		}).on('end', function () {
+			console.log(Buffer.concat(jsonString).toString());
+		});
+	}
 
 	if (url.pathname === '/') {
 		fs.readFile(__dirname + '/index.html', (err, data) => {
@@ -25,12 +38,7 @@ createServer((req, res) => {
 				return;
 			}
 			
-			res.writeHead(200, {
-				'Content-Type': 'text/html; charset=utf-8',
-				'Access-Control-Allow-Origin': 'http://localhost:8080',
-				'Access-Control-Allow-Credentials': true,
-				'Access-Control-Allow-Headers': 'X-Custom-Header'
-			});
+			res.writeHead(200, Object.assign({'Content-Type': 'text/html; charset=utf-8'}, origin));
 			res.write(data);
 			res.end()
 		});
@@ -42,7 +50,7 @@ createServer((req, res) => {
 				res.end();
 				return;
 			}
-			res.writeHead(200, {'Content-Type':'text/javascript; charset=utf-8'});
+			res.writeHead(200, Object.assign({'Content-Type': 'text/html; charset=utf-8'}, origin));
 			res.write(data);
 			res.end()
 		});

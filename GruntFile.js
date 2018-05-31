@@ -46,9 +46,14 @@ module.exports = function (grunt) {
 				force: true,
 				esversion: 6,
 				asi: true,
-				strict: 'global',
+				//strict: 'implied', //true,
 				browser: true,
 				expr: true,
+				laxbreak: true, //allow Bad line breaking [?, :, &&, +...],
+				validthis: true,
+				predef: [
+					"-Promise"
+				],
 				globals: {
 					console: true,
 					simplelib: true,

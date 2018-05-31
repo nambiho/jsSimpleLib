@@ -16,4 +16,4 @@ public/
 # build directory
 build/
 lib/
-testing/
+test/

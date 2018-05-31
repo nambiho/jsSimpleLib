@@ -20,17 +20,170 @@
 		<script src='../dist/simplelib.js'></script>
 		<script>
 			window.addEventListener('DOMContentLoaded', function (e) {
-				var sl = new simplelib({langcode:'kr'});
-				//console.log(sl.util.dateFormat(new Date(), "w"));
-				console.log(sl.util.dateFormat(new Date, 'w'));
-				var key = sl.util.getbyId('key')
-				sl.util.addEvent(document, 'keydown', function(e){
-					key.textContent = e.which
-				});
+				var sl = new simplelib({});
+
+				// runtask
+				// sl.runtask({
+				// 	tasks:[{
+				// 		func: function a() {
+				// 			var a = 0;
+				// 			for (var i = 0; i < 999999999; i++) {
+				// 				a+=i;
+				// 			}
+				// 			console.log(a);
+				// 		}
+				// 	}]
+				// })
+				// .run(function () {console.log(1)})
+				// .run(function () {console.log(2)})
+				// .run(function () {console.log(3)})
+				// .add(function () {console.log(4)})
+				// .run(function () {console.log(5)});
+
+				// sl.runtask({
+				// 	tasks:[{
+				// 		func: function a() {
+				// 			console.log(111);
+				// 		}
+				// 	}, {
+				// 		func: function b() {console.log('222')}
+				// 	}]
+				// })
+				// .run(function () {console.log(333)})
+				// .run(function () {console.log(444)});
+
+				// util.addEvent
+				// console.log(sl.util.dateFormat(new Date, 'w'));
+				// var key = sl.util.getbyId('key')
+				// sl.util.addEvent(document, 'keydown', function(e){
+				// 	key.textContent = e.which
+				// });
 				
-				sl.ajax({
-					url: 'http://'
+				// var ajax = sl.ajax({
+				// 	url: 'http://localhost:9000/test/test.json',
+				// 	type: 'get',
+				// 	dataType: 'json',
+				// 	success: function (data, status, xhr) {
+				// 		console.log('success', data);
+				// 		return 'return 1'
+				// 	},
+				// 	headers: {}
+				// }).then(function (xxx) {
+				// 	console.log('then 1', xxx);
+				// 	return 'return 2'
+				// }).catch(function (e) {
+				// 	console.log('error', e);
+				// 	return 'return 3'
+				// }).then(function (){
+				// 	return 'return 4'
+				// });
+
+				// ajax.then(function (xxx) {
+				// 	console.log('other', xxx);
+				// 	return 'return 5'
+				// });
+
+
+				var prom = new sl.Promise(function executor (resolve, reject) {
+					if (false) {
+						resolve(1,2)
+					} else {reject(3,4)}
 				});
+
+				var prom2 = prom.then(function (a, b) {
+					console.log('첫번째', 1, a, b);
+					return 'aaa'
+				})
+				.then(function () {
+					console.log('두번째');
+				})
+				.catch(function () {
+					console.log('catch 1');
+				})
+				
+
+				prom.then(function (a,b) {
+					console.log('세번째', 3, a, b);
+				})
+				.catch(function (a,b) {
+					console.log('catch 2', a, b)
+				})
+
+				prom2.then(function (xxx) {
+					console.log(111, xxx);
+				})
+
+				//console.log(prom);
+				
+
+				// setTimeout(function () {
+				// 	ajax.then(function (xxx) {
+				// 		console.log('tt', xxx);
+				// 	})
+				// }, 5000);
+
+				// var post = sl.post('http://localhost:9000/test/test.json', {test:'1'}, function (d,s,x) {
+				// 	console.log(x);
+				// });
+
+
+				// sl.get('http://localhost:9000', function (data, status, xhr) {
+				// 	console.log(xhr)
+				// });
+
+				var aaa = new Promise(function (resolve, reject) {
+					if (false) {
+						resolve();
+					} else {
+						reject(2);
+					}
+				});
+
+				var bbb = aaa.then();
+				bbb
+				
+				
+				.then(function () {
+					console.log('bbb then 1');
+				})
+				.catch(function () {
+					console.log('bbb catch 1');
+				})
+				.catch(function () {
+					console.log('bbb catch 2');
+				})
+				.then(function () {
+					console.log('bbb then 2');
+				})
+				.catch(function () {
+					console.log('bbb catch 2');
+				})
+				.then(function () {
+					console.log('bbb then 3');
+				})
+				;
+
+
+				var ccc = aaa.then();
+				ccc
+				.catch(function () {
+					console.log('ccc catch 1');
+				})
+				.then(function () {
+					console.log('ccc then 1');
+				})
+				
+				.then(function () {
+					console.log('ccc then 2');
+				})
+				.then(function () {
+					console.log('ccc then 3');
+				})
+				.catch(function () {
+					console.log('ccc catch 2');
+				});
+
+				
 			})	
 		</script>
 	</body>

@@ -8,7 +8,8 @@
     "build": "grunt",
     "watch": "grunt devserver",
     "webpack": "webpack",
-    "dev": "webpack-dev-server --inline --open --hot"
+    "dev": "grunt devserver",
+    "webpack-dev-server": "webpack-dev-server --inline --open --hot"
   },
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
-"use strict";
-
 export const bInfo = (function (nav) {
+	'use strict';
+	
 	var b = nav.userAgent.toLowerCase(),
 	ie = /msie [6-8]/.test(b),
 	ie9 = /msie 9/.test(b),

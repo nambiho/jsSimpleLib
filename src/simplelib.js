@@ -1,13 +1,10 @@
-"use strict";
-
 import {Version} from './version';
 import {bInfo} from './binfo';
 import {default as util, set} from './util';
 import runtask from './runtask';
 import loader from './loader';
-import lang from "./lang";
-import ajax from "./ajax";
-
+import Promise from './slPromise';
+import {default as ajax, get, post} from "./ajax";
 
 const locale = {
 	date: {
@@ -16,20 +13,22 @@ const locale = {
 };
 
 class simplelib {
-	constructor(opt) {
+	constructor(opt={}) {
 		opt.locale = util.merge(opt.locale||{}, locale);
 		this.option = util.merge({}, opt);
 		this.util = set(this);
 		this.bInfo = bInfo;
 		this.version = Version;
-		this.lang = lang;
 	}
 }
 
 util.proto(simplelib, {
 	ajax: ajax,
 	runtask: runtask,
-	loader: loader
+	loader: loader,
+	Promise: Promise,
+	get: get,
+	post: post
 });
 
 export default simplelib;

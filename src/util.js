@@ -1,6 +1,6 @@
-"use strict";
-
 const util = function () {
+	'use strict';
+
 	const 
 	Super = this,
 	toString = Object.prototype.toString,
@@ -20,7 +20,7 @@ const util = function () {
 	},
 
 	isNative = (x) => {
-		return x.indexOf("[native code]") > -1
+		return isFunction(x) && /native code/.test(x);
 	},
 
 	isFunction = (x) => {
@@ -61,6 +61,15 @@ const util = function () {
 		if (!p) return isJSON(x);
 		let ctor=Object.hasOwnProperty.call(p, "constructor") && p.constructor;
 		return isFunction(ctor) && isNative(ctor.toLocaleString())
+	},
+
+	delay = (ms) => {
+		return new Promise(function (resolve) {
+			let tOut = setTimeout(function () {
+				clearTimeout(tOut);
+				resolve();
+			}, ms);
+		})
 	},
 
 	dateFormat = function _dateFormat(agDate, fmt, bHour12, option) {
@@ -190,10 +199,6 @@ const util = function () {
 			el.setAttribute(attr,info.attr[attr])
 		}
 		style(el, info.style);
-		// for(let ev in info.event){
-		// 	isFunction(info.event[ev]) && addEvent(el, ev, info.event[ev])
-		// }
-
 		addEvent(el, (function (event) {
 			let ret = {};
 			for (let ev in event) {
@@ -226,10 +231,6 @@ const util = function () {
 						t.attachEvent('on' + tp, ev[tp] || noop)
 			}
 		}
-		// t && tp && isFunction(ev) && (t.addEventListener ?
-		// 	t.addEventListener(tp, ev || noop, c || false) :
-		// 	t.attachEvent('on' + tp, ev || noop)
-		// )
 	},
 
 	removeEvent = (t,/*tp,*/ev) => {
@@ -242,11 +243,6 @@ const util = function () {
 						t.dettachEvent('on' + tp, ev[tp] || noop)
 			}
 		}
-
-		// t && tp && isFunction(ev) && (t.removeEventListener ?
-		// 	t.removeEventListener(tp, ev || noop) :
-		// 	t.dettachEvent('on' + tp, ev || noop)
-		// )
 	},
 
 	trigger = function _trigger (_obj,_eventtype) {
@@ -347,12 +343,13 @@ const util = function () {
 		merge: merge,
 		delPrefixMerge: delPrefixMerge,
 		object: object,
+		delay: delay,
 		proto: proto,
 		noop: noop
 	}
 };
 
 export default util();
-export function set (nm) {
-	return util.call(nm)
+export function set (ns) {
+	return util.call(ns)
 }

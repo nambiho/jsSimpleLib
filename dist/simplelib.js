@@ -4,83 +4,140 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 exports.default = ajax;
+exports.get = get;
+exports.post = post;
+function ajax(opts) {
+	'use strict';
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	//simplelib
 
-function ajax(options) {
 	var Super = this;
-	function getHttp() {
-		var cHttp = new XMLHttpRequest();
-		if (window.XDomainRequest) cHttp = new XDomainRequest();
-		return cHttp || null;
 
-		// if (cHttp) {
-		// 	/**
-		// 	 * res.writeHead(200, {
-		// 	 * 'Content-Type': 'text/html; charset=utf-8',
-		// 	 * 'Access-Control-Allow-Origin': 'http://localhost:8080',
-		// 	 * 'Access-Control-Allow-Credentials': true,
-		// 	 * 'Access-Control-Allow-Headers': 'X-Custom-Header'
-		// 	 * });
-		// 	 */
+	var options = Super.util.merge({
+		url: '',
+		type: 'GET',
+		async: true,
+		data: null,
+		dataType: 'html',
+		success: null,
+		fail: null,
+		timeout: null,
+		header: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	}, opts);
 
-		// 	cHttp.open('get', 'http://localhost:9000', true);
-		// 	cHttp.withCredentials = true; //ie10+
-		// 	cHttp.setRequestHeader('X-Request-Header', 'XRequest');
-		// 	cHttp.onreadystatechange = function () {console.log(cHttp.readyState)};
-		// 	cHttp.onload = function () {console.log('onload')}
-		// 	cHttp.onerror = function () {console.log('onerror')}
-		// 	cHttp.send();
-		// }
+	function getSerialize(data) {
+		data = data || {};
+		var returnVal = [];
+		Object.keys(data).forEach(function (name) {
+			returnVal.push(name + '=' + data[name]);
+		});
+		return returnVal.join('&');
 	}
 
-	var ajaxProcess = function () {
-		function ajaxProcess(options) {
-			_classCallCheck(this, ajaxProcess);
+	function getURL(options) {
+		var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
-			this.settings = Super.util.merge({}, options);
-			this.url = this.settings.url || '';
-			this.http = getHttp();
-			this.setOption();
-			return this;
+		if (options.type.toUpperCase(options.url) !== 'GET' || data == '') return options.url;
+		var url = options.url;
+		if (/([?][\w\W]*)/.test(url)) url += '&' + data;else url += '?' + data;
+		return url.replace(/[&?]{1,2}/, '&');
+	}
+
+	function parseData(xhr) {
+		switch (options.dataType) {
+			case 'json':
+				return Super.util.isJsonString(xhr.responseText) ? JSON.parse(xhr.responseText) : xhr.responseText;
+			case 'xml':
+				return xhr.responseXML;
+			default:
+				return xhr.responseText;
+		}
+	}
+	function getXHR() {
+		var x = null;
+		return x = new XMLHttpRequest(), !x && window.XDomainRequest && (x = new XDomainRequest()), x;
+	}
+
+	function request(resolve, reject) {
+		var xhr = getXHR(),
+		    protocol = /([\w]+:)\/\//.test(options.url) ? RegExp.$1 : location.protocol,
+		    hostTest = /([\w]+:)\/\/([^\/]+)/.test(options.url),
+		    host = RegExp.$2 || location.host,
+		    cross = RegExp.$2 && RegExp.$2 === location.host,
+		    data = getSerialize(options.data),
+		    url = getURL(options, data),
+		    abortTimeout = null;
+
+		for (var key in options.headers) {
+			xhr.setRequestHeader(key, options.headers[key]);
+		}if (cross) {
+			xhr.setRequestHeader('X-Requested', 'X-Response');
+			// for Cookie : ie10+
+			xhr.withCredentials && (xhr.withCredentials = true);
 		}
 
-		_createClass(ajaxProcess, [{
-			key: 'send',
-			value: function send(resolve, reject) {
-				var _this = this;
+		xhr.open(options.type, url, options.async !== false);
 
-				this.then(function () {
-					_this.http.send();
-				});
+		xhr.onreadystatechange = function (e) {
+			if (xhr.readyState == 4) {
+				clearTimeout(abortTimeout);
+				if (xhr.status == 200) resolve && resolve(parseData(xhr), 'success', xhr);else reject && reject(xhr.status, 'fail', xhr);
 			}
-		}, {
-			key: 'getOption',
-			value: function getOption(optionName) {
-				return this.settings[optionName];
-			}
-		}, {
-			key: 'setOption',
-			value: function setOption() {}
-		}]);
+		};
 
-		return ajaxProcess;
-	}();
+		if (options.timeout | 0 > 0) {
+			abortTimeout = setTimeout(function () {
+				clearTimeout(abortTimeout);
+				xhr.abort();
+				options.fail && options.fail(xhr.status, 'timeout', xhr);
+			}, options.timeout);
+		}
 
-	return new ajaxProcess(options);
+		xhr.send(options.data || null);
+	}
+
+	var promise = new Super.Promise(request);
+	Super.util.proto(promise, {
+		options: options
+	});
+
+	return promise.then(options.success, options.fail);
+}
+
+function get(url, success, fail) {
+	'use strict';
+
+	return this.ajax({
+		url: url,
+		success: success,
+		fail: fail
+	});
+}
+
+function post(url, data, success, fail) {
+	'use strict';
+
+	return this.ajax({
+		url: url,
+		type: 'post',
+		success: success,
+		fail: fail,
+		data: data
+	});
 }
 
 },{}],2:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 var bInfo = exports.bInfo = function (nav) {
+	'use strict';
+
 	var b = nav.userAgent.toLowerCase(),
 	    ie = /msie [6-8]/.test(b),
 	    ie9 = /msie 9/.test(b),
@@ -99,42 +156,14 @@ var bInfo = exports.bInfo = function (nav) {
 }(navigator);
 
 },{}],3:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.default = lang;
-function lang() {
-	var code = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.option.langcd;
-
-	/**
-  * DATE
-  */
-	var date = {};
-	if (code === 'kr') {
-		date.week = ['일', '월', '화', '수', '목', '금', '토'];
-	} else if (code === 'en') {
-		date.week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-	} else {
-		date.week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-	}
-
-	return {
-		date: date
-	};
-}
-
-},{}],4:[function(require,module,exports){
-
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.default = loader;
 function loader(jsURL, fn, option) {
-	var _this = this;
+	'use strict';
 
 	/**
   * Worker does not support.
@@ -144,6 +173,8 @@ function loader(jsURL, fn, option) {
   * fn : function
   * option : TO-DO
   */
+
+	var _this = this;
 
 	jsURL = this.util.isArray(jsURL) ? jsURL : Array(jsURL);
 	var train = Array(),
@@ -197,84 +228,140 @@ function loader(jsURL, fn, option) {
 	});
 }
 
-},{}],5:[function(require,module,exports){
-
-"use strict";
+},{}],4:[function(require,module,exports){
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 exports.default = runtask;
-function runtask(taskInfo) {
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function runtask(options) {
+	'use strict';
 	/*
- taskInfo = {
- 	async: true/false
- 	func: function
- 	object: thisArg
- 	argv: arguments
+ option = {
+ 	async : true | false [default is true],
+ 	tasks : [{
+ 		func: function
+ 		object: thisArg
+ 		argv: arguments
+ 	}]
  }
  */
 
-	var QUEUE = [],
-	    doneQUEUE = [],
-	    Super = this;
-	var getTasks = function getTasks(tasks) {
+	var Super = this;
+	function _convertArray(source) {
 		var tmp = [];
-		if (Super.util.isArray(tasks)) {
-			tmp = tmp.concat(tasks);
-		} else if (Super.util.isJSON(tasks)) {
-			tmp = tmp.concat([tasks]);
-		} else if (Super.util.isFunction(tasks)) {
-			tmp = [{ func: tasks }];
+		if (Super.util.isArray(source)) {
+			tmp = tmp.concat(source);
+		} else if (Super.util.isJSON(source)) {
+			tmp = tmp.concat([source]);
+		} else if (Super.util.isFunction(source)) {
+			tmp = [{ func: source }];
 		}
-		tmp = tmp.filter(function (entry) {
-			return 'func' in entry;
-		});
 		return tmp;
-	};
+	}
+
+	var QUEUE = function () {
+		function QUEUE(source, filter) {
+			_classCallCheck(this, QUEUE);
+
+			this.data = [];
+			this.push(source);
+			this.filter = filter;
+		}
+
+		_createClass(QUEUE, [{
+			key: 'push',
+			value: function push(source) {
+				var tmp = _convertArray(source);
+				if (this.filter) tmp = this.filter(tmp);
+				this.data = this.data.concat(tmp);
+			}
+		}, {
+			key: 'pop',
+			value: function pop() {
+				if (this.length == 0) return;
+				return this.data.shift();
+			}
+		}, {
+			key: 'length',
+			get: function get() {
+				return this.data.length;
+			}
+		}, {
+			key: 'isEmpty',
+			get: function get() {
+				return this.length === 0;
+			}
+		}]);
+
+		return QUEUE;
+	}();
+
+	var qu = new QUEUE(options.tasks || [], function (src) {
+		return src.filter(function (entry) {
+			return 'func' in entry && Super.util.isFunction(entry.func);
+		});
+	}),
+	    tOut = void 0,
+	    active = false,
+	    isPromise = window.Promise && Super.util.isNative(Promise),
+	    promise = isPromise && Super.util.delay(5);
+
 	var apply = function apply(func, object, argv) {
 		return function () {
-			func.apply(object, Super.util.isArray(argv) ? argv : [argv]);
+			return func.apply(object, Super.util.isArray(argv) ? argv : [argv]);
 		};
 	};
+
+	var process = function taskRunProcess() {
+		if (qu.isEmpty) {
+			active = false;return;
+		}
+		var proc, argv;
+		while (1) {
+			if (!(proc = qu.pop())) {
+				active = false;return;
+			}
+			if (Super.util.isFunction(proc.func)) {
+				argv = Super.util.isArray(proc.argv) ? proc.argv : [proc.argv];
+				if (isPromise) promise && promise.then(apply(proc.func, proc.object || null, argv));else apply(proc.func, proc.object || null, argv)();
+			}
+		}
+	};
+
+	// nextTick을 보장 할 수 있는 솔루션을 만들어야한다.
 	var object = Super.util.object({
+		async: options.async !== false,
 		add: function add(tasks) {
-			var tmp = getTasks(tasks);
-			QUEUE = QUEUE.concat(tmp);
+			qu.push(tasks);
 			return this;
 		},
 		run: function run(tasks) {
-			tasks && this.add(tasks);
-			var proc = void 0,
-			    argv = void 0;
-
-			while (1) {
-				if (QUEUE.length === 0) break;
-				proc = QUEUE.splice(0, 1)[0], argv = Super.util.isArray(proc.argv) ? proc.argv : [proc.argv];
-				if (Super.util.isFunction(proc.func)) {
-					proc.async ? setTimeout(apply(proc.func, proc.object || null, argv), 40) : apply(proc.func, proc.object || null, argv)();
-				}
-				doneQUEUE.push(proc);
+			tasks && qu.push(tasks);
+			if (!active) {
+				if (this.async) {
+					active = true;
+					if (isPromise) process();else setTimeout(process, 10);
+				} else process();
 			}
 			return this;
 		}
 	});
-	Object.defineProperty(object, 'queue', {
-		set: function set(tasks) {
-			QUEUE = getTasks(tasks);
-		},
-		get: function get() {
-			return QUEUE;
-		}
-	});
+
 	Object.freeze(object);
 
-	object.queue = taskInfo;
 	return object;
 }
 
-},{}],6:[function(require,module,exports){
-"use strict";
+},{}],5:[function(require,module,exports){
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -296,9 +383,9 @@ var _loader = require('./loader');
 
 var _loader2 = _interopRequireDefault(_loader);
 
-var _lang = require('./lang');
+var _slPromise = require('./slPromise');
 
-var _lang2 = _interopRequireDefault(_lang);
+var _slPromise2 = _interopRequireDefault(_slPromise);
 
 var _ajax = require('./ajax');
 
@@ -314,7 +401,9 @@ var locale = {
 	}
 };
 
-var simplelib = function simplelib(opt) {
+var simplelib = function simplelib() {
+	var opt = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
 	_classCallCheck(this, simplelib);
 
 	opt.locale = _util2.default.merge(opt.locale || {}, locale);
@@ -322,27 +411,167 @@ var simplelib = function simplelib(opt) {
 	this.util = (0, _util.set)(this);
 	this.bInfo = _binfo.bInfo;
 	this.version = _version.Version;
-	this.lang = _lang2.default;
 };
 
 _util2.default.proto(simplelib, {
 	ajax: _ajax2.default,
 	runtask: _runtask2.default,
-	loader: _loader2.default
+	loader: _loader2.default,
+	Promise: _slPromise2.default,
+	get: _ajax.get,
+	post: _ajax.post
 });
 
 exports.default = simplelib;
 
 if (module) module.exports = simplelib;
 
-},{"./ajax":1,"./binfo":2,"./lang":3,"./loader":4,"./runtask":5,"./util":7,"./version":8}],7:[function(require,module,exports){
-"use strict";
+},{"./ajax":1,"./binfo":2,"./loader":3,"./runtask":4,"./slPromise":6,"./util":7,"./version":8}],6:[function(require,module,exports){
+(function (global){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var Promise = function (global, factory) {
+
+	//return global.Promise||factory();
+	return factory();
+}(typeof global != 'undefined' ? global : undefined || window, function () {
+	'use strict';
+
+	//*
+
+	function getArguments(arg) {
+		return Array.prototype.slice.call(arg);
+	}
+
+	function promiseCallBackFunction() {
+		// parent defer
+		var that = this;
+		return function (onResolve, onReject) {
+			if (status === 0) {
+				try {
+					onResolve(null);
+				} catch (e) {
+					onReject(null, getArguments(e));
+				}
+			}
+		};
+	}
+
+	function rejectHandler(r) {
+		console.error(r);
+	}
+
+	var active = false;
+
+	// function run (f) {
+	// 	chain.push(f);
+	// 	if (!active) {
+	// 		active = setTimeout(function () {
+	// 			var task = chain.shift();
+	// 			while (task) {
+	// 				task && (argv = [task.apply(null, argv)]);
+	// 				task = chain.shift();
+	// 			}
+	// 			active = false;
+	// 		}, 5);
+	// 	}
+	// }
+	function run(defer) {
+		if (!active) {
+			active = setTimeout(function () {
+				var task = defer.status === 1 ? defer.resolve : defer.reject;
+				if (task) {
+					task.apply(defer, defer.argv);
+				} else {}
+			}, 5);
+		}
+	}
+
+	var $Promise = function Promise(executor) {
+		if (!this || this.constructor !== Promise) throw Error('Not a Promise');
+		if (typeof executor !== 'function') throw TypeError('Not a Function');
+
+		var defer = new Defer(this);
+
+		PromiseInit(this, defer);
+
+		executor(function executorResolver() {
+			PromiseResolve(defer, getArguments(arguments));
+		}, function executorRejector() {
+			PromiseReject(defer, getArguments(arguments));
+		});
+	};
+
+	function PromiseInit(that, defer) {
+		that.then = function (onResolve, onReject) {
+			defer.resolve = onResolve;
+			defer.reject = onReject;
+			//active = true;
+			run(defer);
+
+			// if (status === 1) {
+			// 	if (onResolve) {
+			// 		run(onResolve);
+			// 		status = 0;
+			// 	}
+			// } else if (status === -1) {
+			// 	if (onReject) {
+			// 		run(onReject);
+			// 		status = 0;
+			// 	}
+			// }
+
+			var promise = new Promise(promiseCallBackFunction.call(defer));
+			return promise;
+		};
+		that.catch = function (onReject) {
+			return this.then(undefined, onReject);
+		};
+	}
+
+	function PromiseResolve(defer, argv) {
+		defer.argv = argv;
+		defer.status = 1;
+	}
+
+	function PromiseReject(defer, argv) {
+		defer.argv = argv;
+		defer.status = -1;
+	}
+
+	function Defer(promise) {
+		this.promise = promise;
+		this.status = 0;
+		this.argv = [];
+		this.chain = [];
+	}
+
+	// Method
+	$Promise.all = function () {};
+	$Promise.race = function () {};
+	$Promise.resolve = function () {};
+	$Promise.reject = function () {};
+
+	return $Promise;
+	// */
+});
+
+exports.default = Promise;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],7:[function(require,module,exports){
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.set = set;
 var util = function util() {
+	'use strict';
+
 	var Super = this,
 	    toString = Object.prototype.toString,
 	    jsonctor = JSON.constructor,
@@ -358,7 +587,7 @@ var util = function util() {
 		return !x.constructor.name ? toString.call(x) === '[object Object]' : x.constructor.name === 'Object';
 	},
 	    isNative = function isNative(x) {
-		return x.indexOf("[native code]") > -1;
+		return isFunction(x) && /native code/.test(x);
 	},
 	    isFunction = function isFunction(x) {
 		return typeof x === "function";
@@ -394,6 +623,14 @@ var util = function util() {
 		if (!p) return isJSON(x);
 		var ctor = Object.hasOwnProperty.call(p, "constructor") && p.constructor;
 		return isFunction(ctor) && isNative(ctor.toLocaleString());
+	},
+	    delay = function delay(ms) {
+		return new Promise(function (resolve) {
+			var tOut = setTimeout(function () {
+				clearTimeout(tOut);
+				resolve();
+			}, ms);
+		});
 	},
 	    dateFormat = function _dateFormat(agDate, fmt, bHour12, option) {
 		if (isFalse(agDate)) return "";
@@ -521,10 +758,6 @@ var util = function util() {
 			el.setAttribute(attr, info.attr[attr]);
 		}
 		style(el, info.style);
-		// for(let ev in info.event){
-		// 	isFunction(info.event[ev]) && addEvent(el, ev, info.event[ev])
-		// }
-
 		addEvent(el, function (event) {
 			var ret = {};
 			for (var ev in event) {
@@ -550,10 +783,6 @@ var util = function util() {
 				if (isFunction(ev[tp])) isListener ? t.addEventListener(tp, ev[tp] || noop, c || false) : t.attachEvent('on' + tp, ev[tp] || noop);
 			}
 		}
-		// t && tp && isFunction(ev) && (t.addEventListener ?
-		// 	t.addEventListener(tp, ev || noop, c || false) :
-		// 	t.attachEvent('on' + tp, ev || noop)
-		// )
 	},
 	    removeEvent = function removeEvent(t, /*tp,*/ev) {
 		var isListener = !!t.removeEventListener;
@@ -562,11 +791,6 @@ var util = function util() {
 				if (isFunction(ev[tp])) isListener ? t.removeEventListener(tp, ev[tp] || noop) : t.dettachEvent('on' + tp, ev[tp] || noop);
 			}
 		}
-
-		// t && tp && isFunction(ev) && (t.removeEventListener ?
-		// 	t.removeEventListener(tp, ev || noop) :
-		// 	t.dettachEvent('on' + tp, ev || noop)
-		// )
 	},
 	    trigger = function _trigger(_obj, _eventtype) {
 		var _browserEvent = function _browserEvent() {
@@ -671,23 +895,24 @@ var util = function util() {
 		merge: merge,
 		delPrefixMerge: delPrefixMerge,
 		object: object,
+		delay: delay,
 		proto: proto,
 		noop: noop
 	};
 };
 
 exports.default = util();
-function set(nm) {
-	return util.call(nm);
+function set(ns) {
+	return util.call(ns);
 }
 
 },{}],8:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var Version = exports.Version = '0.4.0';
 
-},{}]},{},[6])(6)
+},{}]},{},[5])(5)
 });
