@@ -511,7 +511,6 @@ var Promise = function (global, factory) {
 			defer.reject = onReject;
 			//active = true;
 			run(defer);
-
 			// if (status === 1) {
 			// 	if (onResolve) {
 			// 		run(onResolve);
