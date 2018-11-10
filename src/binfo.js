@@ -6,7 +6,7 @@ export const bInfo = (function (nav) {
 	ie9 = /msie 9/.test(b),
 	ie10 = /msie 10/.test(b),
 	ie11 = /(trident\/)(rv:11)/.test(b),
-	edge,
+	edge = /[e,E]dge/.test(b),
 	chrome = /chrome\//.test(b) && /safari\//.test(b),
 	opera = !chrome&&/opr\/|opera\//.test(b),
 	safari = !opera&&!chrome&&/safari/.test(b),
