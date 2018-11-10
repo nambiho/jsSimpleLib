@@ -38,5 +38,7 @@
     "webpack-cli": "^2.1.5",
     "webpack-dev-server": "^3.1.9"
   },
-  "dependencies": {}
+  "dependencies": {
+    "cached-path-relative": "^1.0.2"
+  }
 }
