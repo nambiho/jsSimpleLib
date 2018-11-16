@@ -3,13 +3,6 @@ started : 2017.12.28
 version : 0.4.0   
 - It is still incomplete. It will be updated continuously.
 
-# Usage
-0. Download /dist/simplelib.js or /dist/simplelib.min.js
-1. javascript code
-~~~
-var sl = new simplelib()
-~~~
-
 # object
 ~~~~
   version : version,
