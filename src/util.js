@@ -92,17 +92,17 @@ const util = function () {
 		return fmt.replace(/(yyyy|yy|mm|dd|m|d|hh|nn|ss|h|n|s|w|z)/gi, function(_1) {
 			switch (_1) {
 				case "yyyy": return y;
-				case "yy": return ("" + y).substr(-2);
-				case "mm": return ("0" + m).substr(-2);
-				case "dd": return ("0" + d).substr(-2);
+				case "yy": return ("" + y).slice(-2);
+				case "mm": return ("0" + m).slice(-2);
+				case "dd": return ("0" + d).slice(-2);
 				case "m": return m;
 				case "d": return dt;
-				case "hh": return (bHour12?ampm + " ":"") + ("0" + (bHour12?hour12:hour24)).substr(-2);
-				case "nn": return ("0" + n).substr(-2);
-				case "ss": return ("0" + s).substr(-2);
+				case "hh": return (bHour12?ampm + " ":"") + ("0" + (bHour12?hour12:hour24)).slice(-2);
+				case "nn": return ("0" + n).slice(-2);
+				case "ss": return ("0" + s).slice(-2);
 				case "h": return h;
 				case "n": return n;
-				case "ss": return ("0" + s).substr(-2);
+				case "ss": return ("0" + s).slice(-2);
 				case "s": return s;
 				//case "w": return lang((option&&option.langcode)||'').date.week[d];
 				case "w": return (Super&&Super.option.locale.date.week[d])||'';
